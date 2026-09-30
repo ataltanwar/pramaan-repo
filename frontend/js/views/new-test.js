@@ -33,8 +33,20 @@ export function vNewTest() {
         <div class="actionrow" style="margin-top:12px;gap:8px;flex-wrap:wrap">
           <button class="btn plain" data-act="new-pick">${ic('upload')}Upload image</button>
           ${S.newScanning ? `<button class="btn primary" data-act="new-capture">${ic('camera')}Capture photo</button>` : `<button class="btn primary" data-act="new-startcam">${ic('camera')}Use camera</button>`}
-          <button class="btn plain" data-act="load-sample-strip" title="Load calibrated test cassette with 6-patch card">${ic('flask')}Demo sample strip</button>
         </div>
+        <div style="margin-top:14px;padding:12px 14px;background:rgba(15,23,42,0.65);border:1px solid rgba(255,255,255,0.08);border-radius:10px;font-size:13px;line-height:1.55;color:var(--muted)">
+          <div style="display:flex;align-items:flex-start;gap:8px">
+            <span style="color:var(--teal);margin-top:2px">${ic('file')}</span>
+            <div>
+              <span>Don't have a physical test image? </span>
+              <a href="sample_test_images/heroin_positive_sample.png" download="heroin_positive_sample.png" target="_blank" style="color:var(--teal);font-weight:600;text-decoration:underline;display:inline-flex;align-items:center;gap:4px">
+                ${ic('download')} Download this sample test image
+              </a>
+              <span> and upload it using the button above to test the colorimetric detection and lighting calibration system. (Select <b>Heroin</b> under Test Type for matching).</span>
+            </div>
+          </div>
+        </div>
+
         ${S.newScanning ? `
           <div style="position:relative;margin-top:12px;border-radius:14px;overflow:hidden;border:2px solid var(--border);background:#000">
             <video class="cam" id="newcam" playsinline muted style="width:100%;display:block;max-height:360px;object-fit:cover"></video>

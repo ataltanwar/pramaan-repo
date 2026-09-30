@@ -19,8 +19,13 @@ export function vLogin() {
     ${chakra()}
     <div class="main">
       <div class="logo"><img src="PRAMAAN%20Logo.png" alt="PRAMAAN Logo" class="login-logo"></div>
-      <h1>PRAMAAN</h1>
-      <p class="tag2">Digital Companion for Field Drug Testing</p>
+      <div style="display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:4px">
+        <h1 style="margin:0">PRAMAAN</h1>
+        <span class="prototype-badge" style="font-size:11px;padding:3px 10px">Prototype</span>
+      </div>
+      <p class="tag2" style="font-size:12px;color:var(--muted);margin-bottom:3px;font-weight:500">Presumptive Result Authentication &amp; Metadata Assurance Network</p>
+      <p class="tag2" style="font-size:13px;opacity:0.85;margin-top:2px">Digital Companion for Field Drug Testing</p>
+
       <div class="form">
         ${S.err ? `<div class="err" role="alert">${esc(S.err)}</div>` : ''}
         <label for="opid">OPERATOR ID</label>

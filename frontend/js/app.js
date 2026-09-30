@@ -270,10 +270,19 @@ async function analyzeCurrentTest() {
       }
     }, 400);
 
-    const testType = S.newTest.testType || 'unknown';
+    const ttEl = $('#new-testtype');
+    if (ttEl && ttEl.value) S.newTest.testType = ttEl.value;
+    const caseEl = $('#new-case');
+    if (caseEl && caseEl.value) S.newTest.caseId = caseEl.value;
+    const sampleEl = $('#new-sample');
+    if (sampleEl && sampleEl.value) S.newTest.sampleId = sampleEl.value;
+
+    const testType = S.newTest.testType || 'Heroin';
     const operatorId = S.user?.id || 'demo-operator';
 
     const analysis = await analyzeTestEvidence(S.newTest.imageDataUrl, testType, operatorId);
+
+
 
     clearInterval(stepTimer);
     S.analysisSteps.forEach(s => (s.done = true));
@@ -561,30 +570,6 @@ document.addEventListener('click', async e => {
       }
       break;
     }
-    case 'load-sample-strip': {
-      const type = S.newTest.testType || 'Opium';
-      const colorMap = {
-        Heroin: '#826655',
-        Morphine: '#3d1a5c',
-        Opium: '#35164f',
-        Cocaine: '#2b5c92',
-        Marijuana: '#3c1b52',
-        Hashish: '#37184b',
-        'Hashish Oil': '#301442',
-        Amphetamines: '#c0451a',
-        Codeine: '#4a2368',
-        Mescaline: '#8c5028',
-        Methaqualone: '#25508a'
-      };
-      const profileColor = colorMap[type] || '#3d1a5c';
-      S.newTest.imageDataUrl = sampleImage(profileColor, (S.newTest.caseId || 'NCB-SAMPLE') + ' · ' + type);
-      S.newTest.analysisReady = false;
-      S.newTest.captureStatus = 'VALID';
-      S.newMsg = 'Calibrated test cassette + 6-patch reference card loaded. Click "Analyse Test Image" below to run lighting calibration & ML classification.';
-      stopNewCamera();
-      render();
-      break;
-    }
     case 'startscan':
       startScan();
       break;
@@ -726,11 +711,19 @@ document.addEventListener('change', e => {
     render();
   }
   if (t.id === 'new-img' && t.files[0]) {
-    fileToDataUrl(t.files[0]).then(u => {
+    const file = t.files[0];
+    const nameLower = (file.name || '').toLowerCase();
+    for (const type of CONFIG.testTypes) {
+      if (nameLower.includes(type.toLowerCase())) {
+        S.newTest.testType = type;
+        break;
+      }
+    }
+    fileToDataUrl(file).then(u => {
       S.newTest.imageDataUrl = u;
       S.newTest.analysisReady = false;
       S.newTest.captureStatus = 'VALID';
-      S.newMsg = 'Image uploaded. Click Analyse Test Image to proceed.';
+      S.newMsg = `Image uploaded (${file.name}). Click Analyse Test Image to proceed.`;
       render();
     });
   }

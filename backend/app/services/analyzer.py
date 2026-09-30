@@ -385,8 +385,9 @@ def detect_reaction_region(image: np.ndarray) -> dict:
     """
     Reaction region detection:
     1. Attempts geometric detection of circular reaction well / tube vial using HoughCircles.
-    2. If found, extracts the focused inner core (radius * 0.70) to prevent border artifact or background dilution.
-    3. Falls back to central rectangular crop (28%–72%) if no distinct circular well is isolated.
+    2. Focuses on the central reaction zone (cx ~ w * 0.5, cy ~ h * 0.42), above the reference card.
+    3. If found, extracts the focused inner core (radius * 0.70) to prevent border artifacts or background dilution.
+    4. Falls back to central rectangular crop if no distinct circular well is isolated.
     """
     h, w = image.shape[:2]
 
@@ -394,8 +395,8 @@ def detect_reaction_region(image: np.ndarray) -> dict:
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     blurred = cv2.GaussianBlur(gray, (7, 7), 1.5)
     min_dim = min(h, w)
-    min_r = int(min_dim * 0.08)
-    max_r = int(min_dim * 0.42)
+    min_r = int(min_dim * 0.10)
+    max_r = int(min_dim * 0.32)
 
     try:
         circles = cv2.HoughCircles(
@@ -408,11 +409,22 @@ def detect_reaction_region(image: np.ndarray) -> dict:
             valid_circles = []
             for c in circles[0]:
                 cx, cy, r = int(c[0]), int(c[1]), int(c[2])
-                if cy < h * 0.78 and r >= min_r:
+                # Well must be located in the cassette reaction area (above the lower reference card)
+                if int(h * 0.20) <= cy <= int(h * 0.70) and r >= min_r:
                     valid_circles.append((cx, cy, r))
 
             if valid_circles:
-                cx, cy, r = min(valid_circles, key=lambda c: (c[0] - w * 0.4)**2 + (c[1] - h * 0.45)**2)
+                target_x = w * 0.5
+                target_y = h * 0.42
+                target_r = min_dim * 0.21
+
+                def circle_score(c):
+                    cx, cy, r = c
+                    dist_xy = np.sqrt((cx - target_x) ** 2 + (cy - target_y) ** 2)
+                    rad_diff = abs(r - target_r)
+                    return dist_xy + rad_diff * 0.5
+
+                cx, cy, r = min(valid_circles, key=circle_score)
                 core_r = max(8, int(r * 0.70))
                 y1, y2 = max(0, cy - core_r), min(h, cy + core_r)
                 x1, x2 = max(0, cx - core_r), min(w, cx + core_r)
@@ -428,13 +440,14 @@ def detect_reaction_region(image: np.ndarray) -> dict:
     except Exception:
         pass
 
-    # Fallback: central crop
-    y1, y2 = int(h * 0.28), int(h * 0.72)
-    x1, x2 = int(w * 0.28), int(w * 0.72)
+    # Fallback: central reaction well crop
+    y1, y2 = int(h * 0.22), int(h * 0.62)
+    x1, x2 = int(w * 0.30), int(w * 0.70)
     roi = image[y1:y2, x1:x2]
     if roi.size == 0:
         return {"ok": False, "reason": "Reaction region could not be extracted from image."}
     return {"ok": True, "roi": roi, "bbox": [x1, y1, x2, y2], "method": "central_crop"}
+
 
 
 # ---------------------------------------------------------------------------

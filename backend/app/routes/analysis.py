@@ -8,10 +8,13 @@ router = APIRouter(prefix="/tests", tags=["analysis"])
 
 def _get_profile(test_type: str) -> dict | None:
     """Fetch the active test profile for the given test type from the database."""
+    cleaned = (test_type or "").strip()
+    if cleaned.lower() in ("heroine", "heroin"):
+        cleaned = "Heroin"
     conn = get_conn()
     row = conn.execute(
-        "SELECT positive_profile, negative_profile FROM test_profiles WHERE name=? AND active=1",
-        (test_type,)
+        "SELECT positive_profile, negative_profile FROM test_profiles WHERE LOWER(name)=LOWER(?) AND active=1",
+        (cleaned,)
     ).fetchone()
     conn.close()
     if not row:
@@ -20,6 +23,7 @@ def _get_profile(test_type: str) -> dict | None:
         "positive_profile": json.loads(row["positive_profile"]),
         "negative_profile": json.loads(row["negative_profile"])
     }
+
 
 @router.post("/analyze")
 async def analyze(
