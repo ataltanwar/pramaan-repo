@@ -1,0 +1,237 @@
+/* ==========================================================================
+   PRAMAAN Design System — Base & Layout Tokens
+   ========================================================================== */
+
+:root {
+  /* Color Palette */
+  --bg: #0a1628;
+  --surface: #1e3a5f;
+  --surface-2: #16304f;
+  --header: #1c3d6b;
+  --border: #2c4d7a;
+  --text: #ffffff;
+  --muted: #9fb3cc;
+  --teal: #0f9688;
+  --teal-2: #14b8a6;
+
+  /* Status Colors */
+  --pos: #ef4444;
+  --neg: #22b38a;
+  --inc: #f59e0b;
+  --warn-bg: #3a2a08;
+
+  /* Typography */
+  --font: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --mono: 'JetBrains Mono', ui-monospace, Consolas, 'Courier New', monospace;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  height: 100%;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 16px;
+  line-height: 1.45;
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  border: 0;
+  background: none;
+}
+
+input, select, textarea {
+  font: inherit;
+  color: inherit;
+}
+
+svg.i {
+  width: 20px;
+  height: 20px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  flex: none;
+}
+
+.mono {
+  font-family: var(--mono);
+}
+
+:focus-visible {
+  outline: 3px solid var(--teal-2);
+  outline-offset: 2px;
+}
+
+/* ==========================================================================
+   Structural Layout
+   ========================================================================== */
+
+.wrap {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.spacer {
+  flex: 1;
+}
+
+/* Header & Topbar */
+.topbar {
+  background: var(--header);
+  border-bottom: 1px solid var(--border);
+}
+
+.topbar .wrap {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding-top: 16px;
+  padding-bottom: 16px;
+}
+
+.demo-strip {
+  background: #0b2a3a;
+  color: var(--teal-2);
+  text-align: center;
+  font-size: 14px;
+  padding: 10px;
+}
+
+.demo-strip button {
+  color: var(--teal-2);
+  text-decoration: underline;
+  font-weight: 600;
+  margin-left: 8px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -.02em;
+}
+
+.brand svg.i {
+  width: 32px;
+  height: 32px;
+  color: var(--teal-2);
+}
+
+.brand-logo {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  box-shadow: 0 0 10px rgba(20, 184, 166, .35);
+  border: 1.5px solid rgba(20, 184, 166, .5);
+  flex-shrink: 0;
+  vertical-align: middle;
+}
+
+.login-logo {
+  width: 88px;
+  height: 88px;
+  border-radius: 50%;
+  object-fit: cover;
+  box-shadow: 0 0 20px rgba(20, 184, 166, .35);
+  border: 2px solid rgba(20, 184, 166, .5);
+  display: block;
+  margin: 0 auto;
+}
+
+.who {
+  text-align: right;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.role {
+  display: inline-block;
+  background: rgba(15, 150, 136, .25);
+  color: var(--teal-2);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 1px 10px;
+  border-radius: 6px;
+  margin-top: 2px;
+}
+
+.net {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  color: var(--teal-2);
+}
+
+.net.off {
+  color: var(--inc);
+}
+
+.iconbtn {
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+  color: var(--text);
+  transition: background-color 0.15s ease;
+}
+
+.iconbtn:hover {
+  background: rgba(255, 255, 255, .08);
+}
+
+.pagehead {
+  background: var(--header);
+  border-bottom: 1px solid var(--border);
+}
+
+.pagehead .wrap {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-top: 18px;
+  padding-bottom: 18px;
+}
+
+.pagehead h1 {
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: -.02em;
+  line-height: 1.1;
+}
+
+.pagehead p {
+  color: #b9c9de;
+  font-size: 15px;
+}
+
+.foot {
+  border-top: 1px solid var(--border);
+  text-align: center;
+  color: var(--muted);
+  font-size: 14px;
+  padding: 18px;
+}

@@ -1,0 +1,402 @@
+/* ==========================================================================
+   PRAMAAN Design System — View-Specific Styles
+   ========================================================================== */
+
+/* Login View */
+.login {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+}
+
+.login .main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  position: relative;
+  z-index: 1;
+}
+
+.chakra {
+  position: absolute;
+  left: 50%;
+  top: 56%;
+  width: 360px;
+  height: 360px;
+  transform: translate(-50%, -50%);
+  opacity: .07;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.login .logo svg {
+  width: 76px;
+  height: 76px;
+  color: var(--teal-2);
+}
+
+.login h1 {
+  font-size: 44px;
+  font-weight: 800;
+  letter-spacing: -.03em;
+  margin-top: 8px;
+}
+
+.login .tag2 {
+  color: var(--muted);
+  font-size: 18px;
+  margin-bottom: 36px;
+}
+
+.form {
+  width: 100%;
+  max-width: 420px;
+}
+
+.form label {
+  display: block;
+  font-weight: 700;
+  font-size: 15px;
+  letter-spacing: .04em;
+  margin: 0 0 8px;
+}
+
+/* New Test & Camera Viewfinder */
+.image-stage {
+  border: 2px dashed var(--border);
+  border-radius: 16px;
+  padding: 14px;
+  margin-bottom: 18px;
+}
+
+.image-preview {
+  width: 100%;
+  max-height: 320px;
+  object-fit: contain;
+  border-radius: 12px;
+  background: #07111f;
+}
+
+video.cam {
+  width: 100%;
+  border-radius: 16px;
+  background: #000;
+  max-height: 340px;
+  margin-bottom: 16px;
+}
+
+/* Verification Verdict & Checks */
+.verdict {
+  border-radius: 20px;
+  padding: 24px;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin: 8px 0 18px;
+  border: 2px solid;
+}
+
+.verdict svg.i {
+  width: 56px;
+  height: 56px;
+}
+
+.verdict h2 {
+  font-size: 32px;
+  font-weight: 800;
+  letter-spacing: -.02em;
+  line-height: 1.1;
+}
+
+.verdict.VALID {
+  border-color: var(--neg);
+  background: rgba(34, 179, 138, .12);
+  color: #6ee7b7;
+}
+
+.verdict.TAMPERED {
+  border-color: var(--pos);
+  background: rgba(239, 68, 68, .12);
+  color: #fca5a5;
+}
+
+.verdict p {
+  color: #e5edf7;
+}
+
+.check {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--border);
+}
+
+.check:last-child {
+  border-bottom: 0;
+}
+
+.check b {
+  display: block;
+}
+
+.check span {
+  color: var(--muted);
+  font-size: 14px;
+  word-break: break-all;
+}
+
+.check .pass {
+  color: var(--neg);
+}
+
+.check .fail {
+  color: var(--pos);
+}
+
+.check .skip {
+  color: var(--muted);
+}
+
+/* Test Log Rows */
+.rec-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+  width: 100%;
+}
+
+.rec-item .rec {
+  margin-bottom: 0;
+  flex: 1;
+}
+
+.rec {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+  text-align: left;
+  padding: 18px 20px;
+  margin-bottom: 12px;
+  border-radius: 16px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.rec:hover {
+  border-color: var(--teal-2);
+}
+
+.sw {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  flex: none;
+  border: 1px solid rgba(255, 255, 255, .15);
+}
+
+.rec .meta {
+  flex: 1;
+  min-width: 0;
+}
+
+.rec .l1 {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.rec .cid {
+  font-family: var(--mono);
+  font-weight: 800;
+  font-size: 17px;
+}
+
+.rec .l2 {
+  color: var(--muted);
+  font-size: 15px;
+}
+
+.rec .l3 {
+  color: var(--muted);
+  font-size: 14px;
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.rec .conf {
+  font-weight: 800;
+  text-align: right;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+}
+
+.rec .conf svg {
+  color: var(--muted);
+}
+
+.exportbar {
+  position: sticky;
+  bottom: 0;
+  background: var(--bg);
+  border-top: 1px solid var(--border);
+  padding: 14px 20px calc(14px + env(safe-area-inset-bottom, 0px));
+}
+
+.exportbar .in {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+/* Modal Bottom Sheet */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(3, 10, 20, .72);
+  z-index: 50;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  backdrop-filter: blur(2px);
+}
+
+.sheet {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 24px 24px 0 0;
+  width: 100%;
+  max-width: 760px;
+  max-height: 92vh;
+  overflow: auto;
+  padding: 22px 20px 28px;
+  animation: up .22s ease-out;
+}
+
+@keyframes up {
+  from {
+    transform: translateY(24px);
+    opacity: 0;
+  }
+  to {
+    transform: none;
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sheet {
+    animation: none;
+  }
+}
+
+.sheet h2 {
+  font-size: 22px;
+  font-weight: 800;
+}
+
+.sheet .shead {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+.shot {
+  width: 100%;
+  max-height: 220px;
+  object-fit: contain;
+  background: #000;
+  border-radius: 14px;
+  margin-bottom: 16px;
+}
+
+.hash {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: #cfe0f4;
+  word-break: break-all;
+}
+
+.qrbox {
+  background: #fff;
+  border-radius: 14px;
+  padding: 10px;
+  width: 200px;
+  height: 200px;
+  margin: 8px auto 0;
+}
+
+.qrbox svg {
+  width: 100%;
+  height: 100%;
+}
+
+.two {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.stub {
+  text-align: center;
+  padding: 64px 20px;
+  color: var(--muted);
+}
+
+.stub h2 {
+  color: var(--text);
+  margin-bottom: 8px;
+}
+
+/* ==========================================================================
+   Responsive Overrides
+   ========================================================================== */
+@media (max-width: 560px) {
+  .tiles {
+    gap: 12px;
+  }
+  .login h1 {
+    font-size: 38px;
+  }
+  .who {
+    display: none;
+  }
+  .kv {
+    grid-template-columns: 110px 1fr;
+  }
+  .formgrid,
+  .actionrow,
+  .supgrid {
+    grid-template-columns: 1fr;
+  }
+  .formgrid .full {
+    grid-column: auto;
+  }
+  .statgrid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .rec {
+    padding: 14px;
+  }
+  .two,
+  .exportbar .in {
+    grid-template-columns: 1fr;
+  }
+}

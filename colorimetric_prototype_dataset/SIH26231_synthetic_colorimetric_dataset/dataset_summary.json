@@ -1,0 +1,26 @@
+{
+  "dataset_name": "SIH26231 Synthetic Colorimetric Prototype CV Dataset",
+  "images": 1260,
+  "drugs": [
+    "heroin",
+    "cocaine",
+    "methamphetamine",
+    "cannabis",
+    "mdma",
+    "fentanyl",
+    "ketamine"
+  ],
+  "classes": [
+    "positive",
+    "negative",
+    "inconclusive"
+  ],
+  "image_size": "224x224",
+  "splits": {
+    "train": 40,
+    "val": 10,
+    "test": 10
+  },
+  "synthetic": true,
+  "real_world_use": false
+}

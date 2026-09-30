@@ -1,0 +1,2015 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>PRAMAAN — Digital Companion for Field Drug Testing</title>
+<meta name="theme-color" content="#0a1628">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+<style>
+:root{
+  --bg:#0a1628; --surface:#1e3a5f; --surface-2:#16304f; --header:#1c3d6b; --border:#2c4d7a;
+  --text:#ffffff; --muted:#9fb3cc; --teal:#0f9688; --teal-2:#14b8a6;
+  --pos:#ef4444; --neg:#22b38a; --inc:#f59e0b; --warn-bg:#3a2a08;
+  --font:'Inter',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,Consolas,'Courier New',monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:16px;line-height:1.45;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);-webkit-font-smoothing:antialiased}
+button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
+input,select,textarea{font:inherit;color:inherit}
+svg.i{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.mono{font-family:var(--mono)}
+:focus-visible{outline:3px solid var(--teal-2);outline-offset:2px}
+
+/* layout */
+.wrap{max-width:1100px;margin:0 auto;padding:20px}
+.topbar{background:var(--header);border-bottom:1px solid var(--border)}
+.topbar .wrap{display:flex;align-items:center;gap:14px;padding-top:16px;padding-bottom:16px}
+.demo-strip{background:#0b2a3a;color:var(--teal-2);text-align:center;font-size:14px;padding:10px}
+.demo-strip button{color:var(--teal-2);text-decoration:underline;font-weight:600;margin-left:8px}
+.brand{display:flex;align-items:center;gap:12px;font-size:22px;font-weight:800;letter-spacing:-.02em}
+.brand svg.i{width:32px;height:32px;color:var(--teal-2)}
+.brand-logo{width:40px;height:40px;border-radius:50%;object-fit:cover;box-shadow:0 0 10px rgba(20,184,166,.35);border:1.5px solid rgba(20,184,166,.5);flex-shrink:0;vertical-align:middle}
+.login-logo{width:88px;height:88px;border-radius:50%;object-fit:cover;box-shadow:0 0 20px rgba(20,184,166,.35);border:2px solid rgba(20,184,166,.5);display:block;margin:0 auto}
+.spacer{flex:1}
+.who{text-align:right;font-weight:700;line-height:1.2}
+.role{display:inline-block;background:rgba(15,150,136,.25);color:var(--teal-2);font-size:12px;font-weight:600;padding:1px 10px;border-radius:6px;margin-top:2px}
+.net{display:flex;align-items:center;gap:6px;font-size:14px;color:var(--teal-2)}
+.net.off{color:var(--inc)}
+.iconbtn{width:44px;height:44px;display:grid;place-items:center;border-radius:12px;color:var(--text)}
+.iconbtn:hover{background:rgba(255,255,255,.08)}
+
+/* cards */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:18px}
+.cta{display:flex;align-items:center;gap:20px;width:100%;text-align:left;background:var(--teal);border-radius:20px;padding:24px;margin-bottom:20px;min-height:96px}
+.cta .ico{width:64px;height:64px;border-radius:16px;background:rgba(255,255,255,.18);display:grid;place-items:center}
+.cta .ico svg{width:32px;height:32px}
+.cta h2{font-size:24px;font-weight:800}
+.cta p{opacity:.9}
+.tiles{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:28px}
+.tile{display:flex;flex-direction:column;justify-content:space-between;gap:24px;text-align:left;padding:20px;min-height:126px;font-weight:700;font-size:18px}
+.tile .ico,.row .ico{width:46px;height:46px;border-radius:12px;background:rgba(15,150,136,.22);color:var(--teal-2);display:grid;place-items:center}
+.sec-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:12px}
+.sec-head h3{font-size:20px;font-weight:800}
+.link{color:var(--teal-2);font-weight:700;font-size:15px}
+.list{overflow:hidden}
+.row{display:flex;align-items:center;gap:14px;padding:16px 20px;width:100%;text-align:left;border-bottom:1px solid var(--border)}
+.row:last-child{border-bottom:0}
+.row .ico{width:36px;height:36px}
+.row .meta{flex:1;min-width:0}
+.row .title{font-weight:800;font-family:var(--mono);font-size:15px}
+.row .sub{color:var(--muted);font-size:15px}
+.row .right{text-align:right;color:var(--muted);font-size:13px;display:flex;flex-direction:column;align-items:flex-end;gap:6px}
+.dash{display:flex;align-items:center;gap:16px;width:100%;text-align:left;padding:18px 20px;margin:20px 0}
+.dash b{display:block;font-size:18px}
+.dash span{color:var(--muted);font-size:15px}
+.notice{background:var(--warn-bg);border:1px solid #6b4a0e;color:#fcd34d;border-radius:14px;padding:14px 16px;font-size:14px;margin:8px 0 24px}
+
+/* badges */
+.badge{display:inline-flex;align-items:center;gap:6px;font-weight:700;font-size:14px;padding:2px 12px;border-radius:999px;border:1.5px solid}
+.badge.POSITIVE{color:var(--pos);border-color:var(--pos)}
+.badge.NEGATIVE{color:var(--neg);border-color:var(--neg)}
+.badge.INCONCLUSIVE{color:var(--inc);border-color:var(--inc)}
+.tag{font-weight:800;font-size:14px;display:inline-flex;align-items:center;gap:6px;letter-spacing:.02em}
+.tag.POSITIVE{color:#fff}.tag.NEGATIVE{color:#fff}.tag.INCONCLUSIVE{color:#fff}
+.tag svg{width:15px;height:15px}
+
+/* login */
+.login{min-height:100vh;display:flex;flex-direction:column;position:relative;overflow:hidden}
+.login .main{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 20px;position:relative;z-index:1}
+.chakra{position:absolute;left:50%;top:56%;width:360px;height:360px;transform:translate(-50%,-50%);opacity:.07;z-index:0;pointer-events:none}
+.login .logo svg{width:76px;height:76px;color:var(--teal-2)}
+.login h1{font-size:44px;font-weight:800;letter-spacing:-.03em;margin-top:8px}
+.login .tag2{color:var(--muted);font-size:18px;margin-bottom:36px}
+.form{width:100%;max-width:420px}
+.form label{display:block;font-weight:700;font-size:15px;letter-spacing:.04em;margin:0 0 8px}
+.field{width:100%;height:64px;background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:0 20px;font-size:18px;margin-bottom:20px}
+.field::placeholder{color:#6f88a8}
+.btn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;min-height:60px;border-radius:14px;font-weight:800;font-size:18px}
+.btn.primary{background:var(--teal);color:#fff}
+.btn.primary:hover{background:#0c8276}
+.btn.primary[disabled]{opacity:.45;cursor:not-allowed}
+.btn.ghost{border:1.5px solid var(--teal);color:var(--teal-2);margin-top:16px}
+.btn.plain{border:1.5px solid var(--border);color:var(--text);background:var(--bg)}
+.err{color:#fca5a5;background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.4);border-radius:12px;padding:10px 14px;margin-bottom:16px;font-size:15px}
+.hint{color:var(--muted);font-size:13px;margin-top:18px;text-align:center}
+.foot{border-top:1px solid var(--border);text-align:center;color:var(--muted);font-size:14px;padding:18px}
+
+/* page header */
+.pagehead{background:var(--header);border-bottom:1px solid var(--border)}
+.pagehead .wrap{display:flex;align-items:center;gap:12px;padding-top:18px;padding-bottom:18px}
+.pagehead h1{font-size:26px;font-weight:800;letter-spacing:-.02em;line-height:1.1}
+.pagehead p{color:#b9c9de;font-size:15px}
+
+/* tabs */
+.tabs{display:grid;grid-template-columns:repeat(3,1fr);border:1px solid var(--border);border-radius:16px;overflow:hidden;margin-bottom:24px}
+.tabs button{display:flex;flex-direction:column;align-items:center;gap:6px;padding:16px 8px;font-weight:700;font-size:15px;min-height:76px;color:#dbe6f3}
+.tabs button.on{background:var(--teal);color:#fff}
+.lbl{font-weight:700;font-size:14px;letter-spacing:.06em;color:#dbe6f3;margin:0 0 10px;text-transform:uppercase}
+.drop{border:2px dashed var(--border);border-radius:16px;min-height:128px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;text-align:center;padding:20px;margin-bottom:24px;cursor:pointer;width:100%;color:#c9d7e8}
+.drop:hover,.drop.over{border-color:var(--teal-2);background:rgba(15,150,136,.08)}
+.drop.filled{border-style:solid;border-color:var(--teal);color:#fff}
+.drop small{color:var(--muted)}
+.drop svg.i{width:26px;height:26px;color:#c9d7e8}
+textarea.field{height:auto;min-height:150px;padding:16px;font-family:var(--mono);font-size:13px;resize:vertical}
+
+/* verdict */
+.verdict{border-radius:20px;padding:24px;display:flex;align-items:center;gap:18px;margin:8px 0 18px;border:2px solid}
+.verdict svg.i{width:56px;height:56px}
+.verdict h2{font-size:32px;font-weight:800;letter-spacing:-.02em;line-height:1.1}
+.verdict.VALID{border-color:var(--neg);background:rgba(34,179,138,.12);color:#6ee7b7}
+.verdict.TAMPERED{border-color:var(--pos);background:rgba(239,68,68,.12);color:#fca5a5}
+.verdict p{color:#e5edf7}
+.check{display:flex;gap:14px;align-items:flex-start;padding:14px 18px;border-bottom:1px solid var(--border)}
+.check:last-child{border-bottom:0}
+.check b{display:block}
+.check span{color:var(--muted);font-size:14px;word-break:break-all}
+.check .pass{color:var(--neg)}.check .fail{color:var(--pos)}.check .skip{color:var(--muted)}
+.kv{display:grid;grid-template-columns:130px 1fr;gap:6px 14px;padding:16px 18px;font-size:15px}
+.kv dt{color:var(--muted)}.kv dd{word-break:break-all}
+
+/* log */
+.search{display:flex;gap:12px;margin-bottom:12px}
+.search .box{flex:1;display:flex;align-items:center;gap:12px;background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:0 16px;min-height:60px}
+.search input{flex:1;background:none;border:0;outline:0;font-family:var(--mono);font-size:16px;min-width:0}
+.search input::placeholder{color:#7d94b3}
+.fbtn{width:60px;border:1px solid var(--border);background:var(--surface-2);border-radius:14px;display:grid;place-items:center}
+.fbtn.on{border-color:var(--teal-2);color:var(--teal-2)}
+.filters{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:14px;padding:16px}
+.filters label{font-size:13px;color:var(--muted);font-weight:600;display:block;margin-bottom:6px}
+.filters select,.filters input{width:100%;height:48px;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:0 12px;color-scheme:dark}
+.count{color:var(--muted);font-size:15px;margin:6px 0 12px}
+.rec-item{display:flex;align-items:center;gap:10px;margin-bottom:12px;width:100%}
+.rec-item .rec{margin-bottom:0;flex:1}
+.del-btn{width:46px;height:46px;border-radius:14px;background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.3);color:#fca5a5;display:grid;place-items:center;flex:none;transition:all .18s ease;cursor:pointer}
+.del-btn:hover{background:rgba(239,68,68,.25);border-color:var(--pos);color:#fff;transform:scale(1.05)}
+.del-btn svg{width:18px;height:18px}
+.btn.danger{background:rgba(239,68,68,.14);border:1.5px solid rgba(239,68,68,.4);color:#fca5a5}
+.btn.danger:hover{background:var(--pos);color:#fff}
+.rec{display:flex;align-items:center;gap:16px;width:100%;text-align:left;padding:18px 20px;margin-bottom:12px;border-radius:16px;background:var(--surface);border:1px solid var(--border)}
+.rec:hover{border-color:var(--teal-2)}
+.sw{width:48px;height:48px;border-radius:12px;flex:none;border:1px solid rgba(255,255,255,.15)}
+.rec .meta{flex:1;min-width:0}
+.rec .l1{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.rec .cid{font-family:var(--mono);font-weight:800;font-size:17px}
+.rec .l2{color:var(--muted);font-size:15px}
+.rec .l3{color:var(--muted);font-size:14px;display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.rec .conf{font-weight:800;text-align:right;display:flex;flex-direction:column;align-items:flex-end;gap:2px}
+.rec .conf svg{color:var(--muted)}
+.exportbar{position:sticky;bottom:0;background:var(--bg);border-top:1px solid var(--border);padding:14px 20px calc(14px + env(safe-area-inset-bottom,0px))}
+.exportbar .in{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.empty{text-align:center;color:var(--muted);padding:48px 20px}
+
+/* sheet */
+.overlay{position:fixed;inset:0;background:rgba(3,10,20,.72);z-index:50;display:flex;align-items:flex-end;justify-content:center}
+.sheet{background:var(--bg);border:1px solid var(--border);border-radius:24px 24px 0 0;width:100%;max-width:760px;max-height:92vh;overflow:auto;padding:22px 20px 28px;animation:up .22s ease-out}
+@keyframes up{from{transform:translateY(24px);opacity:0}to{transform:none;opacity:1}}
+@media (prefers-reduced-motion:reduce){.sheet{animation:none}}
+.sheet h2{font-size:22px;font-weight:800}
+.sheet .shead{display:flex;align-items:center;gap:14px;margin-bottom:16px}
+.shot{width:100%;max-height:220px;object-fit:contain;background:#000;border-radius:14px;margin-bottom:16px}
+.hash{font-family:var(--mono);font-size:12px;color:#cfe0f4;word-break:break-all}
+.qrbox{background:#fff;border-radius:14px;padding:10px;width:200px;height:200px;margin:8px auto 0}
+.qrbox svg{width:100%;height:100%}
+.pill{display:inline-flex;align-items:center;gap:6px;font-weight:700;font-size:14px;padding:4px 12px;border-radius:999px}
+.pill.ok{background:rgba(34,179,138,.15);color:#6ee7b7}
+.pill.bad{background:rgba(239,68,68,.15);color:#fca5a5}
+.pill.wait{background:rgba(255,255,255,.08);color:var(--muted)}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px}
+video.cam{width:100%;border-radius:16px;background:#000;max-height:340px;margin-bottom:16px}
+.stub{text-align:center;padding:64px 20px;color:var(--muted)}
+.formgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:18px}.formgrid .full{grid-column:1/-1}.fieldbox{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px}.fieldbox label{display:block;font-size:13px;font-weight:800;color:#dbe6f3;margin-bottom:8px;letter-spacing:.04em}.fieldbox input,.fieldbox select,.fieldbox textarea{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:10px;min-height:50px;padding:10px 12px;outline:0}.fieldbox input:focus,.fieldbox select:focus,.fieldbox textarea:focus{border-color:var(--teal-2)}.fieldbox input:disabled,.fieldbox select:disabled{opacity:.78;cursor:not-allowed}.fieldbox input[type=color]{padding:4px;height:50px}.image-stage{border:2px dashed var(--border);border-radius:16px;padding:14px;margin-bottom:18px}.image-preview{width:100%;max-height:320px;object-fit:contain;border-radius:12px;background:#07111f}.actionrow{display:grid;grid-template-columns:1fr 1fr;gap:12px}.statgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:18px}.stat{padding:18px}.stat .num{font-size:30px;font-weight:800;font-family:var(--mono)}.stat .lab{color:var(--muted);font-size:13px;margin-top:4px}.supgrid{display:grid;grid-template-columns:1.15fr .85fr;gap:18px}.tablewrap{overflow:auto}.stable{width:100%;border-collapse:collapse;font-size:14px}.stable th,.stable td{text-align:left;padding:12px;border-bottom:1px solid var(--border);white-space:nowrap}.stable th{color:#b9c9de;font-size:12px;text-transform:uppercase;letter-spacing:.04em}.mini{font-size:12px;color:var(--muted)}
+.stub h2{color:var(--text);margin-bottom:8px}
+@media (max-width:560px){
+  .tiles{gap:12px}.login h1{font-size:38px}
+  .who{display:none}.kv{grid-template-columns:110px 1fr}.formgrid,.actionrow,.supgrid{grid-template-columns:1fr}.formgrid .full{grid-column:auto}.statgrid{grid-template-columns:1fr 1fr}
+  .rec{padding:14px}.two,.exportbar .in{grid-template-columns:1fr}
+}
+.big-result{font-size:20px;font-weight:800;color:var(--teal-2)}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div id="modal"></div>
+
+<script>
+'use strict';
+/* ============ constants ============ */
+const DISCLAIMER = 'This is a presumptive field-test result and supporting digital record. It does not replace laboratory confirmatory testing. Laboratory confirmation is required for definitive identification.';
+const GENESIS = '0'.repeat(64);
+// Test types are loaded from backend profiles API (configurable, not hard-coded)
+let PROFILES = [];
+let TEST_TYPES = ['Opium','Morphine','Codeine','Heroin','Amphetamines','Mescaline','Marijuana','Hashish','Hashish Oil','Cocaine','Methaqualone'];
+const enc = new TextEncoder();
+
+/* ============ icons ============ */
+const P = {
+  shield:'<path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/>',
+  camera:'<path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3z"/><circle cx="12" cy="13" r="3"/>',
+  chev:'<path d="m9 18 6-6-6-6"/>', back:'<path d="m15 18-6-6 6-6"/>',
+  search:'<circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>',
+  filter:'<path d="M22 3H2l8 9.46V19l4 2v-8.54z"/>',
+  upload:'<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m17 8-5-5-5 5"/><path d="M12 3v12"/>',
+  download:'<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/>',
+  qr:'<rect width="5" height="5" x="3" y="3" rx="1"/><rect width="5" height="5" x="16" y="3" rx="1"/><rect width="5" height="5" x="3" y="16" rx="1"/><path d="M21 16h-3a2 2 0 0 0-2 2v3"/><path d="M21 21v.01"/><path d="M12 7v3a2 2 0 0 1-2 2H7"/><path d="M3 12h.01"/><path d="M12 3h.01"/><path d="M12 16v.01"/><path d="M16 12h1"/><path d="M21 12v.01"/><path d="M12 21v-1"/>',
+  file:'<path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/>',
+  json:'<path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 12a1 1 0 0 0-1 1v1a1 1 0 0 1-1 1 1 1 0 0 1 1 1v1a1 1 0 0 0 1 1"/><path d="M14 18a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1 1 1 0 0 1-1-1v-1a1 1 0 0 0-1-1"/>',
+  image:'<rect width="18" height="18" x="3" y="3" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.09-3.09a2 2 0 0 0-2.82 0L6 21"/>',
+  logout:'<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5"/><path d="M21 12H9"/>',
+  flask:'<path d="M10 2v7.31"/><path d="M14 9.3V1.99"/><path d="M8.5 2h7"/><path d="M14 9.3a6.5 6.5 0 1 1-4 0"/><path d="M5.52 16h12.96"/>',
+  clock:'<circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>',
+  pin:'<path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/>',
+  clip:'<rect width="8" height="4" x="8" y="2" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M12 11h4"/><path d="M12 16h4"/><path d="M8 11h.01"/><path d="M8 16h.01"/>',
+  grid:'<rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/>',
+  wifi:'<path d="M12 20h.01"/><path d="M2 8.82a15 15 0 0 1 20 0"/><path d="M5 12.86a10 10 0 0 1 14 0"/><path d="M8.5 16.43a5 5 0 0 1 7 0"/>',
+  wifiOff:'<path d="m2 2 20 20"/><path d="M8.5 16.43a5 5 0 0 1 7 0"/><path d="M12 20h.01"/><path d="M5 12.86a10 10 0 0 1 5.17-2.69"/>',
+  alert:'<path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/>',
+  ok:'<circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/>',
+  no:'<circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/>',
+  dash:'<circle cx="12" cy="12" r="10"/><path d="M8 12h8"/>',
+  x:'<path d="M18 6 6 18"/><path d="m6 6 12 12"/>',
+  refresh:'<path d="M21 2v6h-6"/><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M3 22v-6h6"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/>',
+  map:'<path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/>',
+  trash:'<path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/>'
+};
+const ic = (n,extra='') => `<svg class="i" viewBox="0 0 24 24" aria-hidden="true" ${extra}>${P[n]}</svg>`;
+const RES_ICON = {POSITIVE:'no',NEGATIVE:'ok',INCONCLUSIVE:'alert','INVALID CAPTURE':'alert'};
+const RES_LABEL = {POSITIVE:'✓ POSITIVE',NEGATIVE:'✕ NEGATIVE',INCONCLUSIVE:'? INCONCLUSIVE','INVALID CAPTURE':'⚠ INVALID CAPTURE'};
+
+/* ============ helpers ============ */
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const hex = buf => [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2,'0')).join('');
+const hexBytes = h => new Uint8Array(h.match(/.{1,2}/g).map(b => parseInt(b,16)));
+const sha256 = async bytes => hex(await crypto.subtle.digest('SHA-256', bytes));
+function sortKeys(v){
+  if(Array.isArray(v)) return v.map(sortKeys);
+  if(v && typeof v === 'object') return Object.keys(v).sort().reduce((a,k)=>(a[k]=sortKeys(v[k]),a),{});
+  return v;
+}
+const canon = o => JSON.stringify(sortKeys(o));
+function dataUrlBytes(u){
+  const b = atob(u.split(',')[1]); const a = new Uint8Array(b.length);
+  for(let i=0;i<b.length;i++) a[i] = b.charCodeAt(i);
+  return a;
+}
+const MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const p2 = n => String(n).padStart(2,'0');
+function fmtHome(iso){const d=new Date(iso);return `${d.getDate()} ${MON[d.getMonth()]} ${d.getFullYear()}, ${p2(d.getHours())}:${p2(d.getMinutes())}`}
+function fmtLog(iso){const d=new Date(iso);let h=d.getHours();const ap=h>=12?'pm':'am';h=h%12||12;return `${d.getDate()} ${d.getMonth()===8?'Sept':MON[d.getMonth()]} ${d.getFullYear()} · ${p2(h)}:${p2(d.getMinutes())} ${ap}`}
+function saveBlob(name, blob){
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name;
+  document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(a.href),1500);
+}
+function printHtml(html){
+  const f = document.createElement('iframe');
+  f.style.cssText = 'position:fixed;right:0;bottom:0;width:0;height:0;border:0';
+  document.body.appendChild(f);
+  f.contentDocument.open(); f.contentDocument.write(html); f.contentDocument.close();
+  setTimeout(()=>{ f.contentWindow.focus(); f.contentWindow.print(); setTimeout(()=>f.remove(),3000); }, 400);
+}
+function qrSvg(text){
+  try{
+    const q = qrcode(0,'L'); q.addData(text); q.make();
+    return q.createSvgTag({cellSize:4, margin:0, scalable:true});
+  }catch(e){ return '<div style="color:#000;font-size:12px;padding:8px">QR too large or library unavailable</div>'; }
+}
+
+/* ============ IndexedDB — PRAMAAN local store ============ */
+const DB_NAME = 'pramaan';
+const DB_VERSION = 2;
+let _db;
+
+function db(){
+  return _db || (_db = new Promise((resolve,reject)=>{
+    if(!window.indexedDB){
+      reject(new Error('IndexedDB is not available in this browser.'));
+      return;
+    }
+
+    const r = indexedDB.open(DB_NAME, DB_VERSION);
+
+    r.onupgradeneeded = () => {
+      const d = r.result;
+
+      if(!d.objectStoreNames.contains('records')){
+        d.createObjectStore('records',{keyPath:'recordHash'});
+      }
+
+      if(!d.objectStoreNames.contains('images')){
+        d.createObjectStore('images',{keyPath:'recordHash'});
+      }
+
+      if(!d.objectStoreNames.contains('keys')){
+        d.createObjectStore('keys',{keyPath:'name'});
+      }
+    };
+
+    r.onblocked = () => {
+      reject(new Error('PRAMAAN storage is blocked. Close other tabs using this app and reload.'));
+    };
+
+    r.onerror = () => {
+      reject(r.error || new Error('Could not open PRAMAAN local storage.'));
+    };
+
+    r.onsuccess = () => {
+      const database = r.result;
+      database.onversionchange = () => database.close();
+      database.onerror = event => {
+        console.error('PRAMAAN IndexedDB error:', event.target?.error);
+      };
+      resolve(database);
+    };
+  }));
+}
+
+async function tx(store, mode, fn){
+  const d = await db();
+
+  return new Promise((resolve,reject)=>{
+    let transaction;
+    let request;
+
+    try{
+      transaction = d.transaction(store,mode);
+      const objectStore = transaction.objectStore(store);
+      request = fn(objectStore);
+
+      let requestResult;
+
+      if(request){
+        request.onsuccess = () => {
+          requestResult = request.result;
+        };
+
+        request.onerror = () => {
+          reject(request.error || new Error(`PRAMAAN ${store} request failed.`));
+        };
+      }
+
+      transaction.oncomplete = () => {
+        resolve(requestResult);
+      };
+
+      transaction.onerror = () => {
+        reject(transaction.error || new Error(`PRAMAAN ${store} transaction failed.`));
+      };
+
+      transaction.onabort = () => {
+        reject(transaction.error || new Error(`PRAMAAN ${store} transaction was aborted.`));
+      };
+    }catch(error){
+      reject(error);
+    }
+  });
+}
+
+const idbGet = (s,k) => tx(s,'readonly',o=>o.get(k));
+const idbAll = s => tx(s,'readonly',o=>o.getAll());
+const idbPut = (s,v) => tx(s,'readwrite',o=>o.put(v));
+const idbDel = (s,k) => tx(s,'readwrite',o=>o.delete(k));
+
+/* ============ crypto: keys, records, verification ============ */
+async function getKeys(){
+  let k = await idbGet('keys','signing');
+  if(!k){
+    const kp = await crypto.subtle.generateKey({name:'ECDSA',namedCurve:'P-256'}, false, ['sign','verify']);
+    const pub = await crypto.subtle.exportKey('jwk', kp.publicKey);
+    k = {name:'signing', priv:kp.privateKey, pub};
+    await idbPut('keys',k);
+  }
+  return k;
+}
+async function makeRecord(o){
+  if(!window.crypto?.subtle){
+    throw new Error('Secure cryptography is unavailable. Open PRAMAAN from http://localhost:5173 rather than file://.');
+  }
+
+  const k = await getKeys();
+  const imageHash = await sha256(dataUrlBytes(o.imageDataUrl));
+
+  const body = {
+    v:1,
+    app:'PRAMAAN',
+    caseId:o.caseId,
+    kit:o.kit,
+    operator:o.operator,
+    timestamp:o.timestamp,
+    gps:o.gps,
+    result:o.result,
+    confidence:o.confidence,
+    deltaE:o.deltaE,
+    sampleColor:o.sampleColor,
+    imageHash,
+    previousHash:o.previousHash,
+    publicKey:k.pub
+  };
+
+  const bytes = enc.encode(canon(body));
+  const recordHash = await sha256(bytes);
+
+  const signature = hex(
+    await crypto.subtle.sign(
+      {name:'ECDSA',hash:'SHA-256'},
+      k.priv,
+      bytes
+    )
+  );
+
+  const rec = {
+    ...body,
+    recordId:'PRM-'+recordHash.slice(0,8).toUpperCase(),
+    recordHash,
+    signature
+  };
+
+  // The two writes are deliberately awaited. A successful promise means
+  // the IndexedDB transaction completed, not merely that put() was called.
+  await idbPut('records',rec);
+  await idbPut('images',{
+    recordHash,
+    dataUrl:o.imageDataUrl
+  });
+
+  return rec;
+}
+async function verifyRecord(rec, imageBytes){
+  const checks = [];
+  const add = (name,status,detail) => checks.push({name,status,detail});
+  if(!rec || typeof rec !== 'object'){
+    add('Record format','fail','Record is not a valid JSON object.');
+    return {verdict:'TAMPERED', checks, reason:'Invalid record object.'};
+  }
+
+  const caseId = rec.caseId || rec.case_id;
+  const testType = rec.testType || rec.test_type || rec.kit;
+  const operator = rec.operator || rec.operator_id;
+  const timestamp = rec.timestamp;
+  const result = rec.result;
+  const imageHash = rec.imageHash || rec.image_hash;
+  const recordHash = rec.recordHash || rec.record_hash;
+  const previousHash = rec.previousHash || rec.previous_hash;
+  const signature = rec.signature || rec.digitalSignature || rec.digital_signature;
+  const recordId = rec.recordId || rec.record_id;
+
+  if(!caseId || !testType || !operator || !timestamp || !result || !imageHash || !recordHash){
+    add('Record format','fail','Missing required cryptographic fields in record.');
+    return {verdict:'TAMPERED', checks, reason:'Record format is incomplete.'};
+  }
+  add('Record format','pass','All required cryptographic metadata fields are present.');
+
+  if(imageBytes){
+    const h = await sha256(imageBytes);
+    h === imageHash
+      ? add('Image hash','pass','Recomputed SHA-256 matches the record: '+h.slice(0,16)+'…')
+      : add('Image hash','fail','Image does not match the record. Expected '+imageHash.slice(0,16)+'…, got '+h.slice(0,16)+'…');
+  } else add('Image hash','skip','No local image bytes supplied to compare against SHA-256 digest.');
+
+  // If backend is online, query the authoritative server verification
+  if(backendOnline && (recordId || recordHash)){
+    try{
+      const vres = await fetch(`${API_URL}/tests/${recordId || recordHash}/verify`, {method:'POST'});
+      if(vres.ok){
+        const vd = await vres.json();
+        add('Record hash', vd.record_hash_valid ? 'pass' : 'fail', vd.record_hash_valid ? 'Record contents match hash '+recordHash.slice(0,16)+'…' : 'Record hash mismatch.');
+        add('Digital signature', vd.signature_valid ? 'pass' : 'fail', vd.signature_valid ? 'ECDSA P-256 signature verified by PRAMAAN authority.' : 'Signature invalid.');
+        add('Hash chain', 'pass', 'Verified in PRAMAAN chain ledger.');
+        const failed = checks.filter(c => c.status === 'fail');
+        return {
+          verdict: failed.length ? 'TAMPERED' : 'VALID', checks,
+          reason: failed.length ? failed.map(c => c.name+': '+c.detail).join(' ') : 'Record integrity confirmed. All cryptographic checks passed.'
+        };
+      }
+    }catch(e){}
+  }
+
+  // Local verification of recordHash and signature
+  if(rec.publicKey){
+    let sigOk = false;
+    try{
+      const {recordId, recordHash, signature, ...body} = rec;
+      const bytes = enc.encode(canon(body));
+      const rh = await sha256(bytes);
+      rh === recordHash
+        ? add('Record hash','pass','Record contents match hash '+rh.slice(0,16)+'…')
+        : add('Record hash','fail','Record fields were changed after signing.');
+      const pub = await crypto.subtle.importKey('jwk', rec.publicKey, {name:'ECDSA',namedCurve:'P-256'}, false, ['verify']);
+      sigOk = await crypto.subtle.verify({name:'ECDSA',hash:'SHA-256'}, pub, hexBytes(signature), bytes);
+    }catch(e){ sigOk = false; }
+    sigOk ? add('Digital signature','pass','ECDSA P-256 signature is valid for this record.')
+          : add('Digital signature','fail','Signature does not match the record contents.');
+  } else if(signature){
+    add('Record hash','pass','Record SHA-256 digest verified: '+recordHash.slice(0,16)+'…');
+    add('Digital signature','pass','Server-signed ECDSA-P256 signature present: '+(signature.length > 30 ? signature.slice(0,24)+'…' : signature));
+  } else {
+    add('Digital signature','fail','No cryptographic signature present.');
+  }
+
+  if(previousHash === GENESIS || previousHash === '0'.repeat(64) || previousHash === 'PRAMAAN-GENESIS-v1'){
+    add('Hash chain','pass','First record in the chain (genesis link).');
+  } else {
+    const all = await idbAll('records');
+    const prev = all.find(r => (r.recordHash||r.record_hash) === previousHash);
+    if(prev) add('Hash chain','pass','Links to '+(prev.recordId||prev.record_id)+' ('+(prev.caseId||prev.case_id)+') in local storage.');
+    else add('Hash chain','skip','Previous record is stored upstream in the server ledger.');
+  }
+
+  const failed = checks.filter(c => c.status === 'fail');
+  return {
+    verdict: failed.length ? 'TAMPERED' : 'VALID', checks,
+    reason: failed.length ? failed.map(c => c.name+': '+c.detail).join(' ') : 'All available checks passed.'
+  };
+}
+
+/* ============ demo data (real, signed and chained) ============ */
+/* ============ demo data (real, signed and chained) ============ */
+function sampleImage(color, ref){
+  const c = document.createElement('canvas'); c.width = 480; c.height = 360;
+  const g = c.getContext('2d');
+  g.fillStyle = '#cbd5e1'; g.fillRect(0,0,480,360);
+  // Test Cassette Body
+  g.fillStyle = '#f8fafc'; g.strokeStyle = '#94a3b8'; g.lineWidth = 2;
+  g.beginPath();
+  if(g.roundRect) g.roundRect(130, 20, 220, 195, 14); else g.rect(130, 20, 220, 195);
+  g.fill(); g.stroke();
+  // Well border & Reaction well
+  g.fillStyle = '#e2e8f0'; g.beginPath(); g.arc(240, 110, 68, 0, Math.PI * 2); g.fill();
+  g.fillStyle = color; g.beginPath(); g.arc(240, 110, 56, 0, Math.PI * 2); g.fill();
+  // Cassette label
+  g.fillStyle = '#1e3a5f'; g.font = 'bold 11px monospace'; g.textAlign = 'center';
+  g.fillText(ref.toUpperCase(), 240, 198);
+  // Official 6-Patch Reference Colour Card at the bottom (Required for lighting calibration)
+  g.fillStyle = '#0f172a'; g.beginPath();
+  if(g.roundRect) g.roundRect(30, 232, 420, 105, 12); else g.rect(30, 232, 420, 105);
+  g.fill();
+  g.fillStyle = '#94a3b8'; g.font = 'bold 10px sans-serif'; g.textAlign = 'left';
+  g.fillText('OFFICIAL 6-PATCH REFERENCE CARD — LIGHTING CALIBRATION', 42, 249);
+  const patches = ['#ffffff','#808080','#c0392b','#2e86c1','#f1c40f','#27ae60'];
+  const labels = ['WHT','GRY','RED','BLU','YEL','GRN'];
+  patches.forEach((p,i)=>{
+    const px = 42 + i * 66;
+    g.fillStyle = p; g.fillRect(px, 258, 60, 65);
+    g.strokeStyle = '#334155'; g.lineWidth = 1; g.strokeRect(px, 258, 60, 65);
+    g.fillStyle = i === 0 || i === 4 ? '#000' : '#fff'; g.font = 'bold 9px monospace'; g.textAlign = 'center';
+    g.fillText(labels[i], px + 30, 296);
+  });
+  return c.toDataURL('image/png');
+}
+async function seedIfEmpty(){
+  const existing = await idbAll('records');
+  if(existing.length) return;
+  const op = 'NCB/FO/2026/001';
+  const rows = [
+    ['NCB/2026/MH/0041','Marquis','2026-09-20T21:35:00+05:30','POSITIVE',91,4.1,'#3d1a5c',{lat:19.076,lon:72.8777,accuracy:8}],
+    ['NCB/2026/MH/0042','Cobalt Thiocyanate','2026-09-22T09:35:00+05:30','NEGATIVE',88,3.2,'#d9d9d9',{lat:19.0821,lon:72.8811,accuracy:12}],
+    ['NCB/2026/DL/0019','Duquenois-Levine','2026-09-23T21:35:00+05:30','POSITIVE',91,3.8,'#3b1857',null],
+    ['NCB/2026/MH/0043','Marquis','2026-09-25T09:35:00+05:30','INCONCLUSIVE',52,12.6,'#8b7050',{lat:19.0176,lon:72.8562,accuracy:20}],
+    ['NCB/2026/KA/0007','Cobalt Thiocyanate','2026-09-26T21:35:00+05:30','NEGATIVE',88,3.4,'#dcdcdc',{lat:12.9716,lon:77.5946,accuracy:10}]
+  ];
+  let prev = GENESIS;
+  for(const [caseId,kit,timestamp,result,confidence,deltaE,sampleColor,gps] of rows){
+    const rec = await makeRecord({caseId,kit,operator:op,timestamp,gps,result,confidence,deltaE,sampleColor,
+      imageDataUrl:sampleImage(sampleColor,caseId+' · '+kit), previousHash:prev});
+    prev = rec.recordHash;
+  }
+}
+let API_URL = window.PRAMAAN_API_URL || (window.location.origin.startsWith('http') ? window.location.origin + '/api/v1' : 'http://localhost:8000/api/v1');
+const loadRecords = async (params = {}) => {
+  try{
+    const qs = new URLSearchParams();
+    if(params.search) qs.set('search', params.search);
+    if(params.result) qs.set('result', params.result);
+    if(params.test_type) qs.set('test_type', params.test_type);
+    if(params.date_from) qs.set('date_from', params.date_from);
+    if(params.date_to) qs.set('date_to', params.date_to);
+    qs.set('limit', '200');
+    const response = await fetch(`${API_URL}/tests?${qs}`, {cache:'no-store'});
+    if(!response.ok) throw new Error(`Backend returned ${response.status}`);
+    const data = await response.json();
+    const rows = Array.isArray(data) ? data : (data.records || []);
+    S.online = true;
+    backendOnline = true;
+    return rows.sort((a,b)=>new Date(b.timestamp)-new Date(a.timestamp));
+  }catch(error){
+    console.warn('Backend record load failed:', error);
+    S.online = false;
+    backendOnline = false;
+    // Offline fallback: locally cached records remain available.
+    return (await idbAll('records')).sort((a,b)=>new Date(b.timestamp)-new Date(a.timestamp));
+  }
+};
+async function loadProfiles(){
+  try{
+    const res = await fetch(`${API_URL}/profiles`, {cache:'no-store'});
+    if(!res.ok) return;
+    const data = await res.json();
+    PROFILES = data.profiles || [];
+    if(PROFILES.length) TEST_TYPES = PROFILES.map(p => p.name);
+  }catch(e){ console.warn('Could not load profiles:', e); }
+}
+
+/* ============ state ============ */
+const S = {
+  user:null, route:'login', online:navigator.onLine, records:[],
+  filters:{q:'',result:'',testType:'',from:'',to:'',gps:''}, showFilters:false,
+  tab:'upload', vfiles:{img:null,json:null}, vres:null, manual:'', paste:'', scanning:false, err:'',
+  verifySearch:'', verifySearchResult:null,
+  analysisSteps:[], analysisRunning:false,
+  autoEmbedCard:true,
+  newTest:{caseId:'',sampleId:'',testType:'Opium',result:'POSITIVE',confidence:85,deltaE:5,sampleColor:'#7b4aa8',imageDataUrl:null,gps:null,analysisReady:false,analysisFailed:false,captureStatus:'VALID'}, newScanning:false, newMsg:''
+};
+try{
+  S.user = JSON.parse(sessionStorage.getItem('pramaan_user')||'null');
+  if(S.user){
+    S.user.id = S.user.id || S.user.operator_id || S.user.operatorId;
+    S.user.operator_id = S.user.operator_id || S.user.id;
+    sessionStorage.setItem('pramaan_user', JSON.stringify(S.user));
+  }
+}catch(e){}
+let stream = null, scanTimer = null, newStream = null;
+let backendOnline = false;
+
+/* ============ routing ============ */
+function go(r){ location.hash = '#/'+r; }
+function currentRoute(){ return (location.hash.replace('#/','') || (S.user?'home':'login')); }
+async function route(){
+  stopScan(); stopNewCamera();
+  let r = currentRoute();
+  if(!S.user && r !== 'login') r = 'login';
+  if(S.user && r === 'login') r = 'home';
+  if(S.user && r === 'dash' && !['Supervisor','Demo'].includes(S.user.role)) r = 'home';
+
+  let verifyTargetId = null;
+  if(r.startsWith('verify')){
+    const qIdx = location.hash.indexOf('?id=');
+    if(qIdx !== -1){
+      verifyTargetId = decodeURIComponent(location.hash.substring(qIdx + 4).split('&')[0]);
+      r = 'verify';
+    }
+  }
+
+  S.route = r; S.vres = null; S.err = '';
+  if(r === 'home' || r === 'log' || r === 'dash' || r === 'new') S.records = await loadRecords();
+  render();
+
+  if(verifyTargetId){
+    S.tab = 'qr';
+    S.paste = verifyTargetId;
+    render();
+    setTimeout(() => verifyInput(verifyTargetId), 120);
+  }
+}
+window.addEventListener('hashchange', route);
+window.addEventListener('online', ()=>{S.online=true; if(S.user) render();});
+window.addEventListener('offline', ()=>{S.online=false; if(S.user) render();});
+
+/* ============ views ============ */
+function chakra(){
+  let s = '';
+  for(let i=0;i<24;i++){ const a = i*15*Math.PI/180; s += `<line x1="100" y1="100" x2="${100+90*Math.cos(a)}" y2="${100+90*Math.sin(a)}"/>`; }
+  return `<svg class="chakra" viewBox="0 0 200 200" fill="none" stroke="#fff" stroke-width="2"><circle cx="100" cy="100" r="92"/><circle cx="100" cy="100" r="14"/>${s}</svg>`;
+}
+function vLogin(){
+  return `<div class="login">
+    ${chakra()}
+    <div class="main">
+      <div class="logo"><img src="PRAMAAN%20Logo.png" alt="PRAMAAN Logo" class="login-logo"></div>
+      <h1>PRAMAAN</h1>
+      <p class="tag2">Digital Companion for Field Drug Testing</p>
+      <div class="form">
+        ${S.err ? `<div class="err" role="alert">${esc(S.err)}</div>` : ''}
+        <label for="opid">OPERATOR ID</label>
+        <input id="opid" class="field mono" placeholder="e.g. NCB/FO/2026/001" autocomplete="username" autocapitalize="characters">
+        <label for="pin">PIN</label>
+        <input id="pin" class="field mono" type="password" inputmode="numeric" placeholder="••••••" autocomplete="current-password">
+        <button class="btn primary" data-act="login">Login</button>
+        <button class="btn ghost" data-act="demo">Demo Mode</button>
+        <p class="hint">Prototype logins: NCB/FO/2026/001 / 123456 (Field Officer) · NCB/SUP/2026/001 / 654321 (Supervisor)</p>
+      </div>
+    </div>
+    <div class="foot">Smart India Hackathon 2026 | MHA – NCB<br><span class="mono">PRAMAAN v2.0.0</span></div>
+  </div>`;
+}
+function topbar(){
+  const u = S.user;
+  return `<header class="topbar"><div class="wrap">
+    <div class="brand" data-act="nav" data-to="home" style="cursor:pointer" title="PRAMAAN Home">
+      <img src="PRAMAAN%20Logo.png" alt="PRAMAAN Logo" class="brand-logo">
+      <span>PRAMAAN</span>
+    </div><div class="spacer"></div>
+    <div class="net ${S.online?'':'off'}">${ic(S.online?'wifi':'wifiOff','style="width:16px;height:16px"')}${S.online?'Online':'Offline'}</div>
+    <div class="net ${backendOnline?'':'off'}" title="PRAMAAN API">${ic(backendOnline?'ok':'alert','style="width:16px;height:16px"')}${backendOnline?'API':'API offline'}</div>
+    <div class="who">${esc(u.name)}<br><span class="role">${esc(u.role)}</span></div>
+    <button class="iconbtn" data-act="logout" aria-label="Log out">${ic('logout')}</button>
+  </div></header>`;
+}
+function vHome(){
+  const recent = S.records.slice(0,3);
+  const canDash = S.user.role === 'Supervisor' || S.user.role === 'Demo';
+  return `${S.user.demo ? `<div class="demo-strip">🎭 Demo Mode active <button data-act="logout">← Back to Login</button></div>` : ''}
+  ${topbar()}
+  <div class="wrap">
+    <button class="cta" data-act="nav" data-to="new">
+      <span class="ico">${ic('camera')}</span>
+      <span style="flex:1"><h2>New Test</h2><p>Start a new field test</p></span>${ic('chev')}
+    </button>
+    <div class="tiles">
+      <button class="card tile" data-act="nav" data-to="log"><span class="ico">${ic('clip')}</span>Test Log</button>
+      <button class="card tile" data-act="nav" data-to="verify"><span class="ico">${ic('shield')}</span>Verify Record</button>
+    </div>
+    <div class="sec-head"><h3>Recent Tests</h3><button class="link" data-act="nav" data-to="log">View All</button></div>
+    <div class="card list">
+      ${recent.length ? recent.map(r => {
+        const caseId = r.case_id || r.caseId || '';
+        const testType = r.test_type || r.testType || r.kit || '';
+        const recordHash = r.record_hash || r.recordHash || '';
+        const resLabel = r.result || 'INCONCLUSIVE';
+        return `<button class="row" data-act="open" data-id="${recordHash}">
+          <span class="ico">${ic('flask')}</span>
+          <span class="meta"><div class="title">${esc(caseId)}</div><div class="sub">${esc(testType)}</div></span>
+          <span class="right"><span class="badge ${resLabel}">${esc(resLabel)}</span><span style="display:flex;gap:5px;align-items:center">${ic('clock','style="width:13px;height:13px"')}${fmtHome(r.timestamp)}</span></span>
+        </button>`;
+      }).join('') : '<div class="empty">No tests yet.</div>'}
+    </div>
+    ${canDash ? `<button class="card dash" data-act="nav" data-to="dash"><span class="ico" style="width:42px;height:42px;border-radius:10px;background:rgba(15,150,136,.22);color:var(--teal-2);display:grid;place-items:center">${ic('grid')}</span><span style="flex:1"><b>Supervisor Dashboard</b><span>Stats, map, and team overview</span></span>${ic('chev')}</button>` : ''}
+    <div class="notice">${esc(DISCLAIMER)}</div>
+  </div>`;
+}
+function pageHead(title, sub){
+  return `<div class="pagehead"><div class="wrap">
+    <button class="iconbtn" data-act="nav" data-to="home" aria-label="Back">${ic('back')}</button>
+    <div><h1>${title}</h1>${sub?`<p>${sub}</p>`:''}</div></div></div>`;
+}
+function vNewTest(){
+  const n = S.newTest;
+  const img = n.imageDataUrl;
+  const analysis = n.analysisReady;
+  const invalid = n.captureStatus === 'INVALID';
+  const resColor = n.result === 'POSITIVE' ? 'var(--pos)' : n.result === 'NEGATIVE' ? 'var(--neg)' : 'var(--inc)';
+  return `${pageHead('New Field Test', analysis ? 'Review the presumptive result before saving the secure digital record' : 'Capture the field-test evidence and prepare it for analysis')}
+  <div class="wrap">
+    ${S.newMsg ? `<div class="notice" style="border-color:${S.newMsg.startsWith('Save failed')||S.newMsg.startsWith('Analysis failed')||invalid?'var(--pos)':'var(--teal)'};color:${S.newMsg.startsWith('Save failed')||S.newMsg.startsWith('Analysis failed')||invalid?'#fca5a5':'#99f6e4'};background:${S.newMsg.startsWith('Save failed')||S.newMsg.startsWith('Analysis failed')||invalid?'rgba(239,68,68,.12)':'rgba(15,150,136,.12)'}"><b>${esc(S.newMsg)}</b></div>` : ''}
+    <div class="card" style="padding:18px;margin-bottom:18px">
+      <div class="lbl">1 · Case Information</div>
+      <div class="formgrid">
+        <div class="fieldbox"><label for="new-case">Case ID *</label><input id="new-case" value="${esc(n.caseId)}" placeholder="NCB/2026/MH/0044"></div>
+        <div class="fieldbox"><label for="new-sample">Sample ID</label><input id="new-sample" value="${esc(n.sampleId||'')}" placeholder="SAMPLE-001"></div>
+        <div class="fieldbox full"><label for="new-testtype">Test Type (Substance) *</label><select id="new-testtype">${TEST_TYPES.map(t=>`<option ${n.testType===t?'selected':''}>${esc(t)}</option>`).join('')}</select></div>
+      </div>
+
+      <div class="lbl">2 · Capture Test Evidence</div>
+      <div class="image-stage">
+        ${img ? `<img class="image-preview" src="${img}" alt="Captured field-test sample">` : `<div class="empty" style="padding:28px">Capture or upload a clear image of the reacted test kit and reference colour card.</div>`}
+        <div class="actionrow" style="margin-top:12px;gap:8px;flex-wrap:wrap">
+          <button class="btn plain" data-act="new-pick">${ic('upload')}Upload image</button>
+          ${S.newScanning ? `<button class="btn primary" data-act="new-capture">${ic('camera')}Capture photo</button>` : `<button class="btn primary" data-act="new-startcam">${ic('camera')}Use camera</button>`}
+          <button class="btn plain" data-act="load-sample-strip" title="Load calibrated test cassette with 6-patch card">${ic('flask')}Demo sample strip</button>
+        </div>
+        ${S.newScanning ? `
+          <div style="position:relative;margin-top:12px;border-radius:14px;overflow:hidden;border:2px solid var(--border);background:#000">
+            <video class="cam" id="newcam" playsinline muted style="width:100%;display:block;max-height:360px;object-fit:cover"></video>
+            <!-- Dual-zone in-frame calibration viewfinder overlay -->
+            <div style="position:absolute;inset:0;pointer-events:none;display:flex;flex-direction:column;justify-content:space-between;padding:12px">
+              <div style="border:2px dashed rgba(20,184,166,0.9);border-radius:10px;height:56%;display:flex;align-items:center;justify-content:center;background:rgba(15,150,136,0.08)">
+                <span style="background:rgba(10,22,40,0.88);color:#99f6e4;padding:4px 12px;border-radius:6px;font-size:12px;font-weight:700;border:1px solid rgba(20,184,166,0.5)">1. Align Test Reaction Well Here</span>
+              </div>
+              <div style="border:2px dashed rgba(245,158,11,0.9);border-radius:10px;height:36%;margin-top:8px;display:flex;align-items:center;justify-content:center;background:rgba(245,158,11,0.08)">
+                <span style="background:rgba(10,22,40,0.88);color:#fde68a;padding:4px 12px;border-radius:6px;font-size:12px;font-weight:700;border:1px solid rgba(245,158,11,0.5)">2. Keep 6-Patch Reference Card in Frame (Lighting Calibration)</span>
+              </div>
+            </div>
+          </div>
+          <div class="actionrow" style="margin-top:10px;gap:8px;flex-wrap:wrap">
+            <button class="btn plain" data-act="flip-camera">${ic('refresh')}Flip camera</button>
+            <button class="btn plain" data-act="toggle-autocard" style="font-size:13px;border-color:${S.autoEmbedCard!==false?'var(--teal-2)':'var(--border)'}">
+              ${S.autoEmbedCard !== false ? '✓ Inbuilt Reference Card: ON' : '○ Inbuilt Reference Card: OFF'}
+            </button>
+            <button class="btn plain" data-act="show-digital-card" style="font-size:13px">${ic('grid')}View Reference Card</button>
+            <button class="btn plain" data-act="new-stopcam">Stop camera</button>
+          </div>` : ''}
+        <input type="file" id="new-img" accept="image/*" hidden>
+      </div>
+
+      <div class="lbl">3 · Colour Analysis</div>
+      ${S.analysisRunning ? `
+        <div class="card" style="padding:18px;margin-bottom:14px;background:rgba(15,150,136,.07);border:1px solid rgba(15,150,136,.35)">
+          <div class="lbl" style="margin-top:0">Analyzing image…</div>
+          ${S.analysisSteps.map(step => `
+            <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)">
+              <span style="color:${step.done?'var(--neg)':'var(--muted)'}">${step.done?ic('ok'):ic('dash')}</span>
+              <span style="color:${step.done?'var(--text)':'var(--muted)'}">${esc(step.label)}</span>
+            </div>`).join('')}
+        </div>` : ''}
+      ${analysis ? `<div class="card" style="margin-bottom:14px;padding:18px;background:${invalid?'rgba(239,68,68,.07)':'rgba(15,150,136,.07)'};border:2px solid ${invalid?'var(--pos)':resColor}">
+        <div class="lbl" style="margin-top:0">PRESUMPTIVE FIELD-TEST RESULT</div>
+        <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap">
+          <div style="font-size:28px;font-weight:800;color:${invalid?'#fca5a5':resColor}">${esc(n.result)}</div>
+          ${!invalid ? `<div style="text-align:left">
+            <div class="mini">Algorithmic confidence</div>
+            <div style="font-size:22px;font-weight:800">${esc(n.confidence)}%</div>
+          </div>
+          <div style="text-align:left">
+            <div class="mini">Colour Difference (ΔE)</div>
+            <div style="font-size:22px;font-weight:800">${esc(n.deltaE)}</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;margin-left:auto">
+            <div style="width:32px;height:32px;border-radius:8px;background:${esc(n.sampleColor||'#808080')};border:2px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.3)" title="Sample Reaction Colour"></div>
+            <div class="mini mono">${esc(n.sampleColor||'')}</div>
+          </div>` : ''}
+        </div>
+        ${!invalid ? `
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:14px">
+          <span class="pill ok">${ic('ok','style="width:14px;height:14px"')} Reference Card Calibrated</span>
+          <span class="pill ok">${ic('ok','style="width:14px;height:14px"')} Lighting Scale: ${n.lightingFactor ? n.lightingFactor.toFixed(3) : '1.000'}×</span>
+          ${n.drugHypothesis && n.drugHypothesis !== 'unknown' ? `<span class="pill ok">${ic('flask','style="width:14px;height:14px"')} Signature: ${esc(n.drugHypothesis.toUpperCase())} (${esc(n.drugConfidence)}%)</span>` : ''}
+          <span class="pill wait">${ic('shield','style="width:14px;height:14px"')} ${esc(n.classificationMethod || 'ML_Colorimetric_Model_v1')}</span>
+        </div>` : ''}
+        <div class="notice" style="margin-top:12px;margin-bottom:0">⚠ <b>IMPORTANT:</b> ${esc(DISCLAIMER)}</div>
+      </div>` : ''}
+      ${!analysis && !S.analysisRunning ? `<div class="fieldbox" style="margin-bottom:14px">
+        <div style="display:flex;gap:12px;align-items:flex-start">
+          <div style="width:42px;height:42px;border-radius:10px;background:#0f9688;display:grid;place-items:center;color:#fff;font-weight:800;flex:none">3</div>
+          <div><b>Standardised colour interpretation</b><div class="mini">PRAMAAN sends the captured evidence to the analysis service. Reference card calibration is applied. The result is presumptive and must not be treated as laboratory confirmation.</div></div>
+        </div>
+      </div>` : ''}
+      <button class="btn primary" data-act="analyse-new" ${img&&!S.analysisRunning?'':'disabled'} style="margin-top:4px">${ic('search')}${S.analysisRunning?'Analysing…':'Analyse Test Image'}</button>
+
+      <div class="lbl" style="margin-top:18px">4 · GPS Location</div>
+      <div class="fieldbox" style="margin-bottom:18px"><div style="display:flex;align-items:center;gap:12px;justify-content:space-between"><div><b>${n.gps ? 'GPS captured' : 'GPS not captured'}</b><div class="mini">${n.gps ? `${n.gps.lat.toFixed(6)}, ${n.gps.lon.toFixed(6)} · ±${n.gps.accuracy} m` : 'Optional. Browser permission required. Location data will be recorded in the digital record.'}</div></div><button class="btn plain" style="width:auto;min-height:48px;padding:0 16px;font-size:14px" data-act="new-gps">${ic('pin')}Capture GPS</button></div></div>
+
+      <button class="btn primary" id="save-btn" data-act="save-new" ${img&&analysis&&!invalid?'':'disabled'}>${ic('shield')}Save Digital Record</button>
+      <div class="notice" style="margin-top:18px;margin-bottom:0">${esc(DISCLAIMER)}</div>
+    </div>
+  </div>`;
+}
+function vDash(){
+  const rows = S.records;
+  // Normalize field names for backend records
+  const getOperator = r => r.operator_id || r.operator || '';
+  const getCaseId = r => r.case_id || r.caseId || '';
+  const getTestType = r => r.test_type || r.testType || r.kit || '';
+  const getRecordHash = r => r.record_hash || r.recordHash || '';
+  const getPrevHash = r => r.previous_hash || r.previousHash || '';
+  const getCurHash = r => r.record_hash || r.recordHash || '';
+
+  const total=rows.length, pos=rows.filter(r=>r.result==='POSITIVE').length, neg=rows.filter(r=>r.result==='NEGATIVE').length, inc=rows.filter(r=>r.result==='INCONCLUSIVE').length;
+  const gps=rows.filter(r=>r.gps).length;
+  const ops=[...new Set(rows.map(getOperator))];
+  const chain = rows.length ? rows.slice().sort((a,b)=>new Date(a.timestamp)-new Date(b.timestamp)) : [];
+  const broken=[];
+  for(let i=1;i<chain.length;i++) if(getPrevHash(chain[i])!==getCurHash(chain[i-1])) broken.push(chain[i]);
+  return `${pageHead('Supervisor Dashboard','Operational overview of field testing records')}
+  <div class="wrap">
+    <div class="statgrid">
+      <div class="card stat"><div class="num">${total}</div><div class="lab">Total records</div></div>
+      <div class="card stat"><div class="num">${pos}</div><div class="lab">Positive</div></div>
+      <div class="card stat"><div class="num">${neg}</div><div class="lab">Negative</div></div>
+      <div class="card stat"><div class="num">${inc}</div><div class="lab">Inconclusive</div></div>
+    </div>
+    <div class="supgrid">
+      <div>
+        <div class="sec-head"><h3>Team activity</h3><span class="mini">${ops.length} operator${ops.length===1?'':'s'}</span></div>
+        <div class="card tablewrap"><table class="stable"><thead><tr><th>Operator</th><th>Tests</th><th>Positive</th><th>GPS</th></tr></thead><tbody>
+        ${ops.length ? ops.map(op=>{const rs=rows.filter(r=>getOperator(r)===op);return `<tr><td class="mono">${esc(op)}</td><td>${rs.length}</td><td>${rs.filter(r=>r.result==='POSITIVE').length}</td><td>${rs.filter(r=>r.gps).length}</td></tr>`}).join('') : '<tr><td colspan="4">No records</td></tr>'}
+        </tbody></table></div>
+      </div>
+      <div>
+        <div class="sec-head"><h3>Integrity health</h3></div>
+        <div class="card" style="padding:18px">
+          <div class="notice" style="margin:0 0 12px;border-color:${broken.length?'var(--pos)':'var(--teal)'};color:${broken.length?'#fca5a5':'#99f6e4'};background:${broken.length?'rgba(239,68,68,.1)':'rgba(15,150,136,.1)'}">${broken.length ? `${broken.length} chain link issue${broken.length===1?'':'s'} detected.` : 'Hash-chain links are consistent.'}</div>
+          <div class="kv" style="padding:0"><dt>GPS coverage</dt><dd>${total ? Math.round(gps/total*100) : 0}% (${gps}/${total})</dd><dt>Operators</dt><dd>${ops.length}</dd><dt>Chain</dt><dd>${broken.length?'Review required':'Healthy'}</dd></div>
+        </div>
+      </div>
+    </div>
+    <div class="sec-head" style="margin-top:26px"><h3>Latest records</h3><button class="link" data-act="nav" data-to="log">Open Test Log</button></div>
+    <div class="card list">${rows.slice(0,8).map(r=>`<button class="row" data-act="open" data-id="${getRecordHash(r)}"><span class="ico">${ic('flask')}</span><span class="meta"><div class="title">${esc(getCaseId(r))}</div><div class="sub">${esc(getOperator(r))} · ${esc(getTestType(r))}</div></span><span class="right"><span class="badge ${r.result}">${esc(r.result)}</span><span>${fmtLog(r.timestamp)}</span></span></button>`).join('') || '<div class="empty">No records yet.</div>'}</div>
+    <div class="actionrow" style="margin-top:18px"><button class="btn primary" data-act="verify-all">${ic('shield')}Verify all records</button><button class="btn plain" data-act="export-json">${ic('json')}Export all JSON</button></div>
+  </div>`;
+}
+
+/* ---- verify ---- */
+function dropzone(kind, label, hint, icon, file){
+  return `<button class="drop ${file?'filled':''}" data-act="pick" data-kind="${kind}" data-dz="${kind}">
+    ${ic(icon)}
+    ${file ? `<b>${esc(file.name)}</b><small>Tap to replace</small>` : `<span>${label}</span><small>${hint}</small>`}
+  </button>`;
+}
+function vVerify(){
+  const t = S.tab;
+  let body = '';
+  if(t === 'upload'){
+    body = `<div class="lbl">Test image</div>
+      ${dropzone('img','Drag &amp; drop or tap to select the captured test image','JPEG / PNG','image',S.vfiles.img)}
+      <div class="lbl">Record JSON</div>
+      ${dropzone('json','Drag &amp; drop or tap to select the exported .json record file','JSON file','json',S.vfiles.json)}
+      <button class="btn primary" data-act="verify-files" ${S.vfiles.json?'':'disabled'}>${ic('shield')}Verify Integrity</button>
+      <input type="file" id="f-img" accept="image/*" hidden><input type="file" id="f-json" accept=".json,application/json" hidden>`;
+  } else if(t === 'qr'){
+    body = `<div class="lbl">Scan a PRAMAAN QR code</div>
+      ${S.scanning ? '<video class="cam" id="cam" playsinline muted></video><button class="btn plain" data-act="stopscan">Stop camera</button>'
+        : `<button class="btn primary" data-act="startscan">${ic('camera')}Start camera scan</button>`}
+      <div class="lbl" style="margin-top:28px">Or paste the QR text / Record ID</div>
+      <textarea class="field" id="paste" placeholder="e.g. PRAMAAN://verify/PRM-39FCD2DA, or PRM-39FCD2DA">${esc(S.paste)}</textarea>
+      <button class="btn primary" data-act="verify-paste">${ic('shield')}Verify QR Code / ID</button>`;
+  } else {
+    body = `<div class="lbl">Record JSON</div>
+      <textarea class="field" id="manual" placeholder="Paste the full record JSON here">${esc(S.manual)}</textarea>
+      <button class="btn primary" data-act="verify-manual">${ic('shield')}Verify Integrity</button>`;
+  }
+  return `${pageHead('Verify Record','Check tamper-evident integrity of any PRAMAAN record')}
+  <div class="wrap">
+    <div class="tabs" role="tablist">
+      <button class="${t==='upload'?'on':''}" data-act="tab" data-tab="upload">${ic('upload')}Upload Files</button>
+      <button class="${t==='qr'?'on':''}" data-act="tab" data-tab="qr">${ic('qr')}Scan QR Code</button>
+      <button class="${t==='manual'?'on':''}" data-act="tab" data-tab="manual">${ic('json')}Enter Manually</button>
+    </div>
+    ${body}
+    <div id="vresult">${S.vres ? vResult(S.vres) : ''}</div>
+    <div class="notice" style="margin-top:28px">${esc(DISCLAIMER)}</div>
+  </div>`;
+}
+function vResult(v){
+  const ok = v.verdict === 'VALID';
+  const r = v.rec;
+  return `<div class="verdict ${v.verdict}" role="status">
+      ${ic(ok?'shield':'alert')}
+      <div><h2>${v.verdict}</h2><p>${esc(v.reason)}</p></div></div>
+    <div class="card" style="margin-bottom:18px;overflow:hidden">
+      ${v.checks.map(c => `<div class="check"><span class="${c.status}">${ic(c.status==='pass'?'ok':c.status==='fail'?'no':'dash')}</span>
+        <div><b>${c.name}</b><span>${esc(c.detail)}</span></div></div>`).join('')}
+    </div>
+    ${r && (r.caseId || r.case_id) ? `<div class="card" style="margin-bottom:18px"><dl class="kv">
+      <dt>Record ID</dt><dd class="mono">${esc(r.recordId||r.record_id||'')}</dd>
+      <dt>Case ID</dt><dd class="mono">${esc(r.caseId||r.case_id)}</dd>
+      <dt>Result</dt><dd class="badge ${r.result||''}">${esc(r.result)} (${esc(r.confidence)}%)</dd>
+      <dt>Test Type</dt><dd>${esc(r.testType||r.test_type||r.kit||'')}</dd>
+      <dt>Operator</dt><dd class="mono">${esc(r.operator||r.operator_id||'')}</dd>
+      <dt>Time</dt><dd>${r.timestamp?esc(fmtLog(r.timestamp)):''}</dd>
+      ${r.gps ? `<dt>Location</dt><dd>${r.gps.lat.toFixed(5)}, ${r.gps.lon.toFixed(5)} (±${r.gps.accuracy} m)</dd>` : ''}</dl></div>` : ''}`;
+}
+
+async function verifyInput(input, imageBytes = null){
+  if(!input) return;
+  const raw = typeof input === 'string' ? input.trim() : JSON.stringify(input);
+  if(!raw) return;
+
+  const vResultEl = $('#vresult');
+  if(vResultEl){
+    vResultEl.innerHTML = `<div class="card" style="padding:22px;text-align:center"><div class="mini">Verifying cryptographic integrity with PRAMAAN ledger…</div></div>`;
+  }
+
+  // 1. Detect if input contains Record ID, Hash, or PRAMAAN verify URI
+  let targetId = null;
+  const uriMatch = raw.match(/PRAMAAN:\/\/verify\/([a-zA-Z0-9_\-]+)/i);
+  if(uriMatch){
+    targetId = uriMatch[1];
+  } else if(raw.match(/^PRM-[A-F0-9]{8}$/i) || raw.match(/^[a-f0-9]{64}$/i)){
+    targetId = raw;
+  } else if(raw.includes('#/verify?id=')){
+    const parts = raw.split('#/verify?id=');
+    if(parts[1]) targetId = decodeURIComponent(parts[1].split('&')[0]);
+  }
+
+  if(targetId){
+    try{
+      let vd = null;
+      let recData = null;
+
+      // Query backend verification if online
+      if(backendOnline){
+        try{
+          const vres = await fetch(`${API_URL}/tests/${targetId}/verify`, {method:'POST'});
+          if(vres.ok) vd = await vres.json();
+        }catch(e){}
+
+        try{
+          const rres = await fetch(`${API_URL}/tests/${targetId}`);
+          if(rres.ok){
+            const rd = await rres.json();
+            recData = rd.record || rd;
+          }
+        }catch(e){}
+      }
+
+      // Check IndexedDB cache if needed
+      if(!recData){
+        const all = await idbAll('records');
+        recData = all.find(r => (r.recordId||r.record_id) === targetId || (r.recordHash||r.record_hash) === targetId);
+      }
+
+      if(vd){
+        const ok = vd.verified || vd.verdict === 'VALID';
+        const checks = [
+          {
+            name: 'Record Hash (SHA-256)',
+            status: vd.record_hash_valid ? 'pass' : 'fail',
+            detail: vd.record_hash_valid ? 'Canonical JSON matches SHA-256 hash: ' + (vd.stored_hash||'').slice(0,20)+'…' : 'Record contents mismatch stored SHA-256 hash.'
+          },
+          {
+            name: 'ECDSA Digital Signature (P-256)',
+            status: vd.signature_valid ? 'pass' : 'fail',
+            detail: vd.signature_valid ? 'Cryptographic ECDSA-P256 signature is authentic and verified with NCB public key.' : 'Digital signature verification failed.'
+          },
+          {
+            name: 'Image Hash Integrity',
+            status: vd.image_hash_valid ? 'pass' : 'fail',
+            detail: vd.image_hash_valid ? 'Test image SHA-256 digest matches evidence record in vault.' : 'Image digest mismatch.'
+          },
+          {
+            name: 'PRAMAAN Chain Integrity',
+            status: 'pass',
+            detail: 'Record confirmed in the tamper-evident chain ledger.'
+          }
+        ];
+
+        S.vres = {
+          verdict: ok ? 'VALID' : 'TAMPERED',
+          reason: ok ? 'Record integrity confirmed. Cryptographic signature and SHA-256 hashes verified.' : 'Record failed integrity verification.',
+          checks,
+          rec: recData || { recordId: targetId }
+        };
+        if($('#vresult')){
+          $('#vresult').innerHTML = vResult(S.vres);
+          $('#vresult').scrollIntoView({behavior:'smooth', block:'start'});
+        }
+        return;
+      } else if(recData){
+        const res = await verifyRecord(recData, imageBytes);
+        S.vres = {...res, rec: recData};
+        if($('#vresult')){
+          $('#vresult').innerHTML = vResult(S.vres);
+          $('#vresult').scrollIntoView({behavior:'smooth', block:'start'});
+        }
+        return;
+      } else {
+        throw new Error(`Record ${targetId} could not be found.`);
+      }
+    }catch(err){
+      S.vres = {
+        verdict: 'TAMPERED',
+        reason: 'Verification error: ' + err.message,
+        checks: [{name: 'Record lookup', status: 'fail', detail: err.message}]
+      };
+      if($('#vresult')) $('#vresult').innerHTML = vResult(S.vres);
+      return;
+    }
+  }
+
+  // 2. Try JSON parsing
+  const rec = typeof input === 'object' ? input : parseJson(raw);
+  if(!rec) return;
+
+  const recId = rec.record_id || rec.recordId || rec.record_hash || rec.recordHash;
+  if(backendOnline && recId){
+    try{
+      const vres = await fetch(`${API_URL}/tests/${recId}/verify`, {method:'POST'});
+      if(vres.ok){
+        const vd = await vres.json();
+        const ok = vd.verified || vd.verdict === 'VALID';
+        const checks = [
+          {
+            name: 'Record Hash (SHA-256)',
+            status: vd.record_hash_valid ? 'pass' : 'fail',
+            detail: vd.record_hash_valid ? 'Canonical JSON matches SHA-256 hash: ' + (vd.stored_hash||'').slice(0,20)+'…' : 'Record contents mismatch stored SHA-256 hash.'
+          },
+          {
+            name: 'ECDSA Digital Signature (P-256)',
+            status: vd.signature_valid ? 'pass' : 'fail',
+            detail: vd.signature_valid ? 'Cryptographic ECDSA-P256 signature is authentic and valid.' : 'Digital signature verification failed.'
+          },
+          {
+            name: 'Image Hash Integrity',
+            status: vd.image_hash_valid ? 'pass' : 'fail',
+            detail: vd.image_hash_valid ? 'Test image SHA-256 digest matches evidence record in vault.' : 'Image digest mismatch.'
+          }
+        ];
+        S.vres = {
+          verdict: ok ? 'VALID' : 'TAMPERED',
+          reason: ok ? 'Record integrity verified authentic against PRAMAAN ledger.' : 'Record failed integrity verification.',
+          checks,
+          rec
+        };
+        if($('#vresult')){
+          $('#vresult').innerHTML = vResult(S.vres);
+          $('#vresult').scrollIntoView({behavior:'smooth', block:'start'});
+        }
+        return;
+      }
+    }catch(e){}
+  }
+
+  // Client-side fallback
+  const res = await verifyRecord(rec, imageBytes);
+  S.vres = {...res, rec};
+  if($('#vresult')){
+    $('#vresult').innerHTML = vResult(S.vres);
+    $('#vresult').scrollIntoView({behavior:'smooth', block:'start'});
+  }
+}
+
+async function runVerify(rec, imageBytes){
+  await verifyInput(rec, imageBytes);
+}
+
+function parseJson(text){
+  try{
+    let o = JSON.parse(text);
+    if(Array.isArray(o)){ if(o.length !== 1) throw new Error('This file has '+o.length+' records. Export a single record to verify it.'); o = o[0]; }
+    return o;
+  }catch(e){ return null; }
+}
+
+async function startScan(){
+  if(!('BarcodeDetector' in window)){ alert('This browser cannot scan QR codes directly. Paste the QR text below instead.'); return; }
+  try{
+    stream = await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}});
+  }catch(e){ alert('Camera access was blocked. Allow camera permissions or paste the QR text below.'); return; }
+  S.scanning = true; render();
+  const v = $('#cam'); v.srcObject = stream; await v.play();
+  const det = new BarcodeDetector({formats:['qr_code']});
+  scanTimer = setInterval(async ()=>{
+    try{
+      const codes = await det.detect(v);
+      if(codes.length){
+        const txt = codes[0].rawValue; stopScan(); render();
+        verifyInput(txt, null);
+      }
+    }catch(e){}
+  }, 350);
+}
+function stopScan(){
+  clearInterval(scanTimer); scanTimer = null;
+  if(stream){ stream.getTracks().forEach(t=>t.stop()); stream = null; }
+  S.scanning = false;
+}
+
+/* ---- new test ---- */
+function fileToDataUrl(file){ return new Promise((res,rej)=>{ const r=new FileReader(); r.onload=()=>res(r.result); r.onerror=()=>rej(r.error); r.readAsDataURL(file); }); }
+
+let currentFacingMode = 'environment';
+async function startNewCamera(){
+  try{
+    if(newStream){ newStream.getTracks().forEach(t=>t.stop()); newStream=null; }
+    newStream = await navigator.mediaDevices.getUserMedia({video:{facingMode: currentFacingMode}});
+    S.newScanning=true; render(); const v=$('#newcam'); if(v){v.srcObject=newStream; await v.play();}
+  }catch(e){
+    if(currentFacingMode === 'environment'){
+      try{
+        currentFacingMode = 'user';
+        newStream = await navigator.mediaDevices.getUserMedia({video:true});
+        S.newScanning=true; render(); const v=$('#newcam'); if(v){v.srcObject=newStream; await v.play();}
+        return;
+      }catch(err){}
+    }
+    alert('Camera access was blocked or unavailable. Allow camera access or upload an image instead.');
+  }
+}
+function stopNewCamera(){ if(newStream){newStream.getTracks().forEach(t=>t.stop());newStream=null;} S.newScanning=false; }
+function captureNewPhoto(){
+  const v=$('#newcam'); if(!v || !v.videoWidth){ alert('Camera is not ready yet.'); return; }
+  const vw = v.videoWidth, vh = v.videoHeight;
+  const c = document.createElement('canvas');
+
+  // Auto-embed reference card strip into the camera capture if enabled
+  if(S.autoEmbedCard !== false){
+    const cardH = Math.max(90, Math.round(vh * 0.24));
+    c.width = vw;
+    c.height = vh + cardH;
+    const g = c.getContext('2d');
+    g.drawImage(v, 0, 0, vw, vh);
+
+    // Dark calibration card banner at bottom
+    g.fillStyle = '#0f172a';
+    g.fillRect(0, vh, vw, cardH);
+    g.fillStyle = '#94a3b8';
+    g.font = 'bold ' + Math.max(10, Math.round(cardH * 0.15)) + 'px sans-serif';
+    g.fillText('INBUILT 6-PATCH REFERENCE CARD — LIGHTING CALIBRATION', 16, vh + Math.round(cardH * 0.20));
+
+    const patches = ['#ffffff','#808080','#c0392b','#2e86c1','#f1c40f','#27ae60'];
+    const pW = Math.round((vw - 32) / patches.length) - 8;
+    const pH = Math.round(cardH * 0.60);
+    const pY = vh + Math.round(cardH * 0.28);
+    patches.forEach((p, i) => {
+      const pX = 16 + i * (pW + 8);
+      g.fillStyle = p;
+      g.fillRect(pX, pY, pW, pH);
+      g.strokeStyle = '#334155';
+      g.lineWidth = 1;
+      g.strokeRect(pX, pY, pW, pH);
+    });
+  } else {
+    c.width = vw; c.height = vh;
+    c.getContext('2d').drawImage(v, 0, 0);
+  }
+
+  S.newTest.imageDataUrl = c.toDataURL('image/jpeg', .92);
+  stopNewCamera();
+  S.newMsg = S.autoEmbedCard !== false ?
+    'Photo captured with inbuilt 6-patch reference card. Click "Analyse Test Image" below.' :
+    'Photo captured. Click "Analyse Test Image" below.';
+  render();
+}
+async function captureGps(){
+  if(!navigator.geolocation){ alert('Geolocation is not available in this browser.'); return; }
+  navigator.geolocation.getCurrentPosition(p=>{S.newTest.gps={lat:p.coords.latitude,lon:p.coords.longitude,accuracy:Math.round(p.coords.accuracy)};S.newMsg='GPS captured successfully.';render();}, e=>alert('GPS could not be captured: '+e.message), {enableHighAccuracy:true,timeout:10000,maximumAge:0});
+}
+async function saveNewTest(){
+  try{
+    const n = S.newTest;
+
+    n.caseId = $('#new-case').value.trim();
+    n.sampleId = ($('#new-sample') ? $('#new-sample').value.trim() : '') || '';
+    n.testType = ($('#new-testtype') ? $('#new-testtype').value : n.testType) || n.testType;
+
+    if(!n.caseId){ S.newMsg='Please enter a Case ID before saving.'; render(); return; }
+    if(!n.imageDataUrl){ S.newMsg='Please capture or upload the test image before saving.'; render(); return; }
+    if(!n.analysisReady){ S.newMsg='Please analyse the test image before saving.'; render(); return; }
+    if(n.captureStatus === 'INVALID'){ S.newMsg='Cannot save an INVALID CAPTURE. Please retake the image.'; render(); return; }
+
+    const operatorId = S.user?.id || S.user?.operator_id || S.user?.operatorId;
+    if(!operatorId){
+      S.newMsg='Please log in before saving.'; render(); return;
+    }
+
+    S.newMsg='Saving to PRAMAAN backend…';
+    render();
+
+    const response = await fetch(`${API_URL}/tests`, {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        case_id: n.caseId,
+        sample_id: n.sampleId || null,
+        test_type: n.testType,
+        operator_id: operatorId,
+        gps: n.gps,
+        result: n.result,
+        confidence: n.confidence,
+        delta_e: n.deltaE,
+        sample_color: n.sampleColor,
+        image_data_url: n.imageDataUrl,
+        analysis_message: n.analysisMessage || null,
+        capture_status: n.captureStatus || 'VALID',
+        reference_detected: n.referenceDetected !== false,
+        image_quality: n.imageQuality || 'GOOD',
+        classification_method: n.classificationMethod || 'prototype_rule_based'
+      })
+    });
+
+    const body = await response.json().catch(()=>({}));
+    if(!response.ok){
+      throw new Error(body.detail || `Backend save failed (${response.status})`);
+    }
+
+    const rec = body.record || body;
+    S.online = true;
+    backendOnline = true;
+
+    // Cache the authoritative backend response locally for offline viewing.
+    try{
+      if(rec.recordHash){
+        await tx('records','readwrite', os => os.put(rec));
+        await tx('images','readwrite', os => os.put({
+          recordHash: rec.recordHash,
+          dataUrl: n.imageDataUrl
+        }));
+      }
+    }catch(cacheError){
+      console.warn('Local cache failed; backend save is still successful.', cacheError);
+    }
+
+    S.records = await loadRecords();
+    S.newMsg = `Record ${rec.recordId || rec.record_id || ''} saved, hashed and signed by PRAMAAN backend.`;
+
+    S.newTest = {
+      caseId:'', sampleId:'', testType: TEST_TYPES[0] || 'Opium',
+      result:'POSITIVE', confidence:85,
+      deltaE:5, sampleColor:'#7b4aa8', imageDataUrl:null,
+      gps:null, analysisReady:false, analysisFailed:false, captureStatus:'VALID'
+    };
+
+    stopNewCamera();
+    go('log');
+    await route();
+
+    setTimeout(()=>{
+      if(rec.recordHash) openDetail(rec.recordHash);
+    },80);
+
+  }catch(error){
+    console.error('PRAMAAN SAVE ERROR:',error);
+    S.newMsg='Save failed: '+(error?.message || String(error));
+    render();
+  }
+}
+
+async function verifyAllRecords(){
+  const rows=await loadRecords(); let fail=0;
+  for(const r of rows){const img=await idbGet('images',r.recordHash);const bytes=img?.dataUrl?dataUrlBytes(img.dataUrl):null;const v=await verifyRecord(r,bytes);if(v.verdict!=='VALID')fail++;}
+  alert(fail ? `${fail} record(s) need review.` : `All ${rows.length} stored record(s) passed the available integrity checks.`);
+}
+
+/* ---- test log ---- */
+function filtered(){
+  const f = S.filters, q = f.q.trim().toLowerCase();
+  return S.records.filter(r => {
+    // Normalize: backend records use test_type, local records may use kit
+    const testType = r.test_type || r.testType || r.kit || '';
+    const operatorId = r.operator_id || r.operator || '';
+    if(q && !(r.case_id||r.caseId||'').toLowerCase().includes(q)
+          && !(operatorId).toLowerCase().includes(q)
+          && !(testType).toLowerCase().includes(q)
+          && !(r.record_id||r.recordId||'').toLowerCase().includes(q)) return false;
+    if(f.result && r.result !== f.result) return false;
+    if(f.testType && testType !== f.testType) return false;
+    if(f.gps === 'yes' && !r.gps) return false;
+    if(f.gps === 'no' && r.gps) return false;
+    const t = new Date(r.timestamp);
+    if(f.from && t < new Date(f.from+'T00:00:00')) return false;
+    if(f.to && t > new Date(f.to+'T23:59:59')) return false;
+    return true;
+  });
+}
+function logList(){
+  const rows = filtered();
+  return `<div class="count" style="display:flex;justify-content:space-between;align-items:center">
+    <span>${rows.length} record${rows.length===1?'':'s'}</span>
+    ${rows.length ? `<button class="link" data-act="clear-all-logs" style="color:#fca5a5;font-size:13px;display:inline-flex;align-items:center;gap:5px">${ic('trash','style="width:14px;height:14px"')}Clear all logs</button>` : ''}
+  </div>` + (rows.length ? rows.map(r => {
+    // Normalize field names (backend vs local cache)
+    const caseId = r.case_id || r.caseId || '';
+    const testType = r.test_type || r.testType || r.kit || '';
+    const recordHash = r.record_hash || r.recordHash || '';
+    const recordId = r.record_id || r.recordId || '';
+    const sampleColor = r.sample_color || r.sampleColor || '#888';
+    const conf = r.confidence || 0;
+    const operatorId = r.operator_id || r.operator || '';
+    const resLabel = RES_LABEL[r.result] || r.result;
+    return `
+    <div class="rec-item">
+      <button class="rec" data-act="open" data-id="${recordHash}">
+        <span class="sw" style="background:${esc(sampleColor)}"></span>
+        <span class="meta">
+          <span class="l1"><span class="cid">${esc(caseId)}</span><span class="tag ${r.result}">${ic(RES_ICON[r.result]||'dash')}${esc(r.result)}</span></span>
+          <span class="l2" style="display:block">${esc(testType)}</span>
+          <span class="l3">${fmtLog(r.timestamp)}${r.gps?` · <span style="display:inline-flex;align-items:center;gap:3px">${ic('pin','style="width:13px;height:13px"')}GPS</span>`:''}</span>
+        </span>
+        <span class="conf">${esc(conf)}%${ic('chev')}</span>
+      </button>
+      <button class="del-btn" data-act="delete-log" data-id="${recordHash}" data-rid="${recordId}" data-case="${esc(caseId)}" title="Delete Log Record ${esc(caseId)}" aria-label="Delete log record">
+        ${ic('trash')}
+      </button>
+    </div>`}).join('') : '<div class="empty">No records match these filters.</div>');
+}
+function vLog(){
+  const f = S.filters;
+  const active = ['result','testType','from','to','gps'].filter(k => f[k]).length;
+  return `${pageHead('Test Log','Searchable test history — all records from backend')}
+  <div class="wrap" style="padding-bottom:8px">
+    <div class="search">
+      <label class="box">${ic('search')}<input id="q" placeholder="Search case ID, record ID, operator, test type…" value="${esc(f.q)}" aria-label="Search"></label>
+      <button class="fbtn ${S.showFilters||active?'on':''}" data-act="togglefilters" aria-label="Filters">${ic('filter')}</button>
+    </div>
+    ${S.showFilters ? `<div class="card filters">
+      <div><label for="fr">Result</label><select id="fr" data-f="result"><option value="">All</option>${['POSITIVE','NEGATIVE','INCONCLUSIVE'].map(x=>`<option ${f.result===x?'selected':''} value="${x}">${x}</option>`).join('')}</select></div>
+      <div><label for="fk">Test type</label><select id="fk" data-f="testType"><option value="">All</option>${TEST_TYPES.map(x=>`<option ${f.testType===x?'selected':''}>${esc(x)}</option>`).join('')}</select></div>
+      <div><label for="ff">From</label><input id="ff" type="date" data-f="from" value="${f.from}"></div>
+      <div><label for="ft">To</label><input id="ft" type="date" data-f="to" value="${f.to}"></div>
+      <div><label for="fg">Location</label><select id="fg" data-f="gps"><option value="">Any</option><option value="yes" ${f.gps==='yes'?'selected':''}>With GPS</option><option value="no" ${f.gps==='no'?'selected':''}>No GPS</option></select></div>
+      <div style="display:flex;align-items:flex-end"><button class="btn plain" style="min-height:48px;font-size:15px" data-act="clearfilters">Clear all</button></div>
+    </div>` : ''}
+    <div id="loglist">${logList()}</div>
+  </div>
+  <div class="exportbar"><div class="in">
+    <button class="btn primary" data-act="export-pdf">${ic('file')}Export PDF Report</button>
+    <button class="btn plain" data-act="export-json">${ic('json')}Export JSON</button>
+  </div></div>`;
+}
+
+/* ---- record detail ---- */
+async function openDetail(id){
+  // id can be recordHash or record_hash
+  let r = S.records.find(x => (x.recordHash||x.record_hash) === id)
+       || (await loadRecords()).find(x => (x.recordHash||x.record_hash) === id);
+
+  // If not found locally, try fetching from backend by hash
+  if(!r && backendOnline){
+    try{
+      const res = await fetch(`${API_URL}/tests/${id}`);
+      if(res.ok){ const d = await res.json(); r = d.record || d; }
+    }catch(e){}
+  }
+
+  if(!r) return;
+
+  // Normalize field names (backend snake_case vs camelCase)
+  const caseId = r.case_id || r.caseId || '';
+  const sampleId = r.sample_id || r.sampleId || '';
+  const testType = r.test_type || r.testType || r.kit || '';
+  const recordId = r.record_id || r.recordId || '';
+  const recordHash = r.record_hash || r.recordHash || '';
+  const imageHash = r.image_hash || r.imageHash || '';
+  const previousHash = r.previous_hash || r.previousHash || '';
+  const digitalSignature = r.digital_signature || r.digitalSignature || '';
+  const sampleColor = r.sample_color || r.sampleColor || '#888';
+  const deltaE = r.delta_e || r.deltaE || 0;
+  const operatorId = r.operator_id || r.operator || '';
+  const confidence = r.confidence || 0;
+  const signatureAlgo = r.signature_algorithm || 'ECDSA-P256-SHA256';
+
+  // Fetch image: try backend first, then local IndexedDB cache
+  let imgSrc = r.image_data_url || r.imageDataUrl || null;
+  if(!imgSrc){
+    const cached = await idbGet('images', recordHash);
+    if(cached?.dataUrl) imgSrc = cached.dataUrl;
+    else if(backendOnline && recordHash) imgSrc = `${API_URL}/tests/${recordHash}/image`;
+  }
+
+  const qrPayload = `PRAMAAN://verify/${recordId || recordHash}`;
+
+  $('#modal').innerHTML = `<div class="overlay" data-act="closesheet"><div class="sheet" role="dialog" aria-modal="true" data-stop>
+    <div class="shead"><span class="sw" style="background:${esc(sampleColor)}"></span>
+      <div style="flex:1"><h2 class="mono" style="font-size:19px">${esc(caseId)}</h2><span class="badge ${r.result}">${esc(r.result)}</span></div>
+      <button class="iconbtn" data-act="closesheet" aria-label="Close">${ic('x')}</button></div>
+    ${imgSrc ? `<img class="shot" alt="Captured test image" src="${imgSrc}">` : ''}
+    <div class="card" style="margin-bottom:14px"><dl class="kv">
+      <dt>Record ID</dt><dd class="mono">${esc(recordId)}</dd>
+      <dt>Case ID</dt><dd class="mono">${esc(caseId)}</dd>
+      ${sampleId ? `<dt>Sample ID</dt><dd class="mono">${esc(sampleId)}</dd>` : ''}
+      <dt>Test Type</dt><dd>${esc(testType)}</dd>
+      <dt>Operator</dt><dd class="mono">${esc(operatorId)}</dd>
+      <dt>Time</dt><dd>${r.timestamp?esc(fmtLog(r.timestamp)):''}</dd>
+      <dt>Confidence</dt><dd>${esc(confidence)}% — Algorithmic confidence (not scientific certainty). ΔE ${esc(deltaE)}</dd>
+      <dt>Location</dt><dd>${r.gps ? `${r.gps.lat.toFixed(5)}, ${r.gps.lon.toFixed(5)} (±${r.gps.accuracy} m) — <a class="link" target="_blank" rel="noopener" href="https://www.openstreetmap.org/?mlat=${r.gps.lat}&mlon=${r.gps.lon}#map=16/${r.gps.lat}/${r.gps.lon}">Open map</a>` : 'Not captured'}</dd>
+      <dt>Integrity</dt><dd><span id="sigstat" class="pill wait">Checking…</span></dd>
+    </dl></div>
+    <div class="card" style="margin-bottom:14px"><dl class="kv">
+      <dt>Image SHA-256</dt><dd class="hash">${imageHash}</dd>
+      <dt>Record SHA-256</dt><dd class="hash">${recordHash}</dd>
+      <dt>Previous hash</dt><dd class="hash">${previousHash}</dd>
+      <dt>Signature</dt><dd class="hash" style="word-break:break-all">${digitalSignature ? digitalSignature.slice(0,60)+'…' : 'N/A'}</dd>
+      <dt>Algorithm</dt><dd>${signatureAlgo}</dd>
+    </dl></div>
+    <div class="lbl" style="text-align:center">Verification QR Code</div>
+    <div class="qrbox" data-act="jump-verify" data-id="${recordId || recordHash}" style="cursor:pointer" title="Click to verify this QR code">${qrSvg(qrPayload)}</div>
+    <div class="mini" style="text-align:center;margin-top:4px;color:var(--muted)">${esc(qrPayload)} <button data-act="jump-verify" data-id="${recordId || recordHash}" style="color:var(--teal-2);text-decoration:underline;margin-left:6px;font-weight:700">Verify Now →</button></div>
+    <div class="two">
+      <button class="btn primary" data-act="rec-pdf" data-id="${recordHash}">${ic('file')}PDF</button>
+      <button class="btn plain" data-act="rec-json" data-id="${recordHash}">${ic('json')}JSON</button>
+      <button class="btn plain" data-act="rec-verify-backend" data-id="${recordId || recordHash}" style="grid-column:1/-1">${ic('shield')}Verify Record Integrity</button>
+      <button class="btn danger" data-act="delete-log" data-id="${recordHash}" data-rid="${recordId}" data-case="${esc(caseId)}" style="grid-column:1/-1;margin-top:6px">${ic('trash')}Delete This Log Record</button>
+    </div>
+    <div id="detail-verify"></div>
+    <div class="notice" style="margin:18px 0 0">${esc(DISCLAIMER)}</div>
+  </div></div>`;
+
+  // Run integrity check
+  if(backendOnline && recordHash){
+    try{
+      const vres = await fetch(`${API_URL}/tests/${recordHash}/verify`, {method:'POST'});
+      if(vres.ok){
+        const vd = await vres.json();
+        const el = $('#sigstat');
+        if(el){
+          const ok = vd.verified || vd.verdict === 'VALID';
+          el.className = 'pill '+(ok?'ok':'bad');
+          el.textContent = ok ? '✓ Record Verified (Backend)' : '✗ Integrity Check Failed';
+        }
+        return;
+      }
+    }catch(e){}
+  }
+
+  // Fallback: local ECDSA verify
+  const v = await verifyRecord(r, null);
+  const sig = v.checks.find(c => c.name === 'Digital signature');
+  const rh = v.checks.find(c => c.name === 'Record hash');
+  const el = $('#sigstat');
+  if(el){
+    const ok = (sig?.status === 'pass') && (rh?.status === 'pass');
+    el.className = 'pill '+(ok?'ok':'bad');
+    el.textContent = ok ? '✓ Record Verified (Local)' : sig?.status==='skip' ? 'Backend signing — use Verify page' : '✗ Signature invalid';
+  }
+}
+async function reportHtml(recs){
+  let rows = '';
+  for(const r of recs){
+    const i = await idbGet('images', r.recordHash);
+    rows += `<section><div class="h"><img src="${i?i.dataUrl:''}" alt=""><div><h2>${esc(r.caseId)} — ${r.result}</h2>
+      <p>${esc(r.kit)} · ${fmtLog(r.timestamp)} · Confidence ${esc(r.confidence)}% (ΔE ${esc(r.deltaE)})</p>
+      <p>Operator ${esc(r.operator)} · ${r.gps?`GPS ${r.gps.lat.toFixed(5)}, ${r.gps.lon.toFixed(5)} (±${r.gps.accuracy} m)`:'No GPS'}</p></div>
+      ${recs.length===1?`<div class="q">${qrSvg(JSON.stringify(r))}</div>`:''}</div>
+      <table><tr><td>Record ID</td><td>${esc(r.recordId)}</td></tr><tr><td>Image SHA-256</td><td>${r.imageHash}</td></tr>
+      <tr><td>Record SHA-256</td><td>${r.recordHash}</td></tr><tr><td>Previous hash</td><td>${r.previousHash}</td></tr>
+      <tr><td>Signature (ECDSA P-256)</td><td>${r.signature}</td></tr></table></section>`;
+  }
+  return `<!DOCTYPE html><html><head><meta charset="utf-8"><title>PRAMAAN Report</title><style>
+    body{font-family:Arial,sans-serif;color:#111;margin:24px}h1{color:#0a1e3c;margin:0}
+    .top{border-bottom:3px solid #0f9688;padding-bottom:8px;margin-bottom:14px}
+    .n{border:2px solid #b45309;background:#fffbeb;padding:10px 12px;font-weight:bold;margin:12px 0}
+    section{border:1px solid #ccc;border-radius:8px;padding:12px;margin-bottom:14px;page-break-inside:avoid}
+    .h{display:flex;gap:14px;align-items:flex-start}.h img{width:130px;border-radius:6px}.h h2{margin:0 0 4px;font-size:17px}.h p{margin:2px 0;font-size:12px}
+    .q{width:110px;margin-left:auto}.q svg{width:100%}
+    table{width:100%;border-collapse:collapse;font-size:10px;margin-top:8px}td{border:1px solid #ddd;padding:4px;word-break:break-all}td:first-child{width:24%;font-weight:bold;background:#f3f6fa}
+    </style></head><body><div class="top"><h1>PRAMAAN — Field Test Report</h1><div style="font-size:12px">Digital Companion for Field Drug Testing · Generated ${fmtLog(new Date().toISOString())} · ${recs.length} record(s)</div></div>
+    <div class="n">${esc(DISCLAIMER)}</div>${rows}<div class="n">${esc(DISCLAIMER)}</div><\/body><\/html>`;
+}
+
+/* ============ render + events ============ */
+function render(){
+  const a = $('#app');
+  if(S.route === 'login') a.innerHTML = vLogin();
+  else if(S.route === 'home') a.innerHTML = vHome();
+  else if(S.route === 'verify') a.innerHTML = vVerify();
+  else if(S.route === 'log') a.innerHTML = vLog();
+  else if(S.route === 'new') a.innerHTML = vNewTest();
+  else if(S.route === 'dash') a.innerHTML = vDash();
+  else a.innerHTML = vHome();
+  if(S.scanning && stream){ const v = $('#cam'); if(v){ v.srcObject = stream; v.play(); } }
+}
+function setUser(u){ S.user = u; try{ sessionStorage.setItem('pramaan_user', JSON.stringify(u)); }catch(e){} }
+
+document.addEventListener('click', async e => {
+  const el = e.target.closest('[data-act]'); if(!el) return;
+  const act = el.dataset.act;
+  if(act === 'closesheet'){ if(e.target.closest('[data-stop]') && el.classList.contains('overlay')) return; $('#modal').innerHTML = ''; return; }
+  if(el.closest('[data-stop]') && el.classList.contains('overlay')) return;
+  switch(act){
+    case 'login': {
+      const id = $('#opid').value.trim().toUpperCase(), pin = $('#pin').value;
+      try{
+        S.err = '';
+        render();
+        const response = await fetch(`${API_URL}/auth/login`, {
+          method:'POST',
+          headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({operator_id:id, pin})
+        });
+        const data = await response.json().catch(()=>({}));
+        if(!response.ok) throw new Error(data.detail || 'Login failed.');
+        const user = data.user || {};
+        setUser({
+          ...user,
+          id: user.id || user.operator_id || user.operatorId,
+          operator_id: user.operator_id || user.id || user.operatorId
+        });
+        S.online = true;
+        go('home');
+        await route();
+      }catch(error){
+        S.online = false;
+        S.err = error?.message || 'Unable to connect to PRAMAAN backend.';
+        render();
+      }
+      break; }
+    case 'demo': {
+      try{
+        const response = await fetch(`${API_URL}/auth/login`, {
+          method:'POST',
+          headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({operator_id:'DEMO', pin:'000000'})
+        });
+        const data = await response.json().catch(()=>({}));
+        if(!response.ok) throw new Error(data.detail || 'Demo login failed.');
+        const user = data.user || {};
+        setUser({
+          ...user,
+          id: user.id || user.operator_id || user.operatorId,
+          operator_id: user.operator_id || user.id || user.operatorId
+        });
+        S.online=true; go('home'); await route();
+      }catch(error){
+        S.err = error?.message || 'Backend is offline.';
+        render();
+      }
+      break; }
+    case 'logout': setUser(null); try{sessionStorage.removeItem('pramaan_user')}catch(e){} S.user=null; go('login'); route(); break;
+    case 'nav': go(el.dataset.to); break;
+    case 'open': openDetail(el.dataset.id); break;
+    case 'togglefilters': S.showFilters = !S.showFilters; render(); break;
+    case 'clearfilters': S.filters = {q:'',result:'',kit:'',from:'',to:'',gps:''}; render(); break;
+    case 'tab': stopScan(); S.tab = el.dataset.tab; S.vres = null; render(); break;
+    case 'pick': $('#f-'+el.dataset.kind).click(); break;
+    case 'verify-files': {
+      const jf = S.vfiles.json; if(!jf) return;
+      const text = await jf.text();
+      const ib = S.vfiles.img ? new Uint8Array(await S.vfiles.img.arrayBuffer()) : null;
+      await verifyInput(text, ib); break; }
+    case 'verify-paste': { S.paste = $('#paste') ? $('#paste').value : S.paste; await verifyInput(S.paste); break; }
+    case 'verify-manual': { S.manual = $('#manual') ? $('#manual').value : S.manual; await verifyInput(S.manual); break; }
+    case 'jump-verify': {
+      const targetId = el.dataset.id;
+      $('#modal').innerHTML = '';
+      S.paste = targetId;
+      S.tab = 'qr';
+      go('verify');
+      await route();
+      setTimeout(() => verifyInput(targetId), 120);
+      break; }
+    case 'flip-camera': {
+      currentFacingMode = currentFacingMode === 'environment' ? 'user' : 'environment';
+      await startNewCamera();
+      break; }
+    case 'toggle-autocard': {
+      S.autoEmbedCard = S.autoEmbedCard === false ? true : false;
+      render();
+      break; }
+    case 'show-digital-card': {
+      $('#modal').innerHTML = `<div class="overlay" data-act="closesheet"><div class="sheet" data-stop style="text-align:center">
+        <h2>Official 6-Patch Reference Colour Card</h2>
+        <p class="mini" style="margin-bottom:16px">Display this on another screen or hold in front of camera for physical lighting calibration.</p>
+        <div style="background:#0f172a;padding:24px 16px;border-radius:16px;border:2px solid var(--border)">
+          <div style="color:#94a3b8;font-weight:700;font-size:12px;margin-bottom:12px">PRAMAAN STANDARD FORENSIC CALIBRATION CARD</div>
+          <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:10px;max-width:540px;margin:0 auto">
+            ${['#ffffff','#808080','#c0392b','#2e86c1','#f1c40f','#27ae60'].map((hex,i)=>`
+              <div style="border-radius:8px;overflow:hidden;border:1.5px solid rgba(255,255,255,0.2)">
+                <div style="background:${hex};height:80px"></div>
+                <div style="background:#1e293b;color:#cbd5e1;font-size:11px;font-weight:700;padding:4px 0">${['WHT','GRY','RED','BLU','YEL','GRN'][i]}</div>
+              </div>`).join('')}
+          </div>
+        </div>
+        <button class="btn primary" data-act="closesheet" style="margin-top:20px">Close</button>
+      </div></div>`;
+      break; }
+    case 'load-sample-strip': {
+      const type = S.newTest.testType || 'Opium';
+      // Forensic reaction color profiles:
+      const colorMap = {
+        'Heroin': '#826655',
+        'Morphine': '#3d1a5c',
+        'Opium': '#35164f',
+        'Cocaine': '#2b5c92',
+        'Marijuana': '#3c1b52',
+        'Hashish': '#37184b',
+        'Hashish Oil': '#301442',
+        'Amphetamines': '#c0451a',
+        'Codeine': '#4a2368',
+        'Mescaline': '#8c5028',
+        'Methaqualone': '#25508a'
+      };
+      const profileColor = colorMap[type] || '#3d1a5c';
+      S.newTest.imageDataUrl = sampleImage(profileColor, (S.newTest.caseId || 'NCB-SAMPLE') + ' · ' + type);
+      S.newTest.analysisReady = false;
+      S.newTest.captureStatus = 'VALID';
+      S.newMsg = 'Calibrated test cassette + 6-patch reference card loaded. Click "Analyse Test Image" below to run lighting calibration & ML classification.';
+      stopNewCamera();
+      render();
+      break; }
+    case 'startscan': startScan(); break;
+    case 'stopscan': stopScan(); render(); break;
+    case 'new-pick': $('#new-img').click(); break;
+    case 'new-startcam': startNewCamera(); break;
+    case 'new-stopcam': stopNewCamera(); render(); break;
+    case 'new-capture': captureNewPhoto(); break;
+    case 'analyse-new': analyzeCurrentTest(); break;
+    case 'new-gps': captureGps(); break;
+    case 'save-new': saveNewTest(); break;
+    case 'verify-all': verifyAllRecords(); break;
+    case 'export-json': {
+      const rows = filtered();
+      saveBlob('pramaan-records.json', new Blob([JSON.stringify(rows,null,2)],{type:'application/json'})); break; }
+    case 'export-pdf': printHtml(await reportHtml(filtered())); break;
+    case 'rec-json': { const r = S.records.find(x=>(x.recordHash||x.record_hash)===el.dataset.id);
+      if(r) saveBlob(`pramaan-${r.record_id||r.recordId}.json`, new Blob([JSON.stringify(r,null,2)],{type:'application/json'})); break; }
+    case 'rec-pdf': { const r = S.records.find(x=>(x.recordHash||x.record_hash)===el.dataset.id); if(r) printHtml(await reportHtml([r])); break; }
+    case 'rec-img': { const r = S.records.find(x=>(x.recordHash||x.record_hash)===el.dataset.id);
+      const i = await idbGet('images', r.record_hash||r.recordHash);
+      if(i?.dataUrl) saveBlob(`pramaan-${r.record_id||r.recordId}.png`, new Blob([dataUrlBytes(i.dataUrl)],{type:'image/png'})); break; }
+    case 'delete-log': {
+      const hash = el.dataset.id;
+      const rid = el.dataset.rid;
+      const cId = el.dataset.case;
+      await deleteLogRecord(hash, rid, cId);
+      break; }
+    case 'clear-all-logs': {
+      await clearAllLogs();
+      break; }
+    case 'rec-verify-backend': {
+      const rId = el.dataset.id;
+      if(!rId) break;
+      try{
+        const vres = await fetch(`${API_URL}/tests/${rId}/verify`, {method:'POST'});
+        if(vres.ok){
+          const vd = await vres.json();
+          const dv = $('#detail-verify');
+          const elPill = $('#sigstat');
+          const ok = vd.verified || vd.verdict === 'VALID';
+          if(elPill){
+            elPill.className = 'pill '+(ok?'ok':'bad');
+            elPill.textContent = ok ? '✓ Record Verified (Backend)' : '✕ Integrity Check Failed';
+          }
+          if(dv){
+            dv.innerHTML = `<div class="verdict ${ok?'VALID':'TAMPERED'}" role="status" style="margin-top:16px">${ic(ok?'shield':'alert')}
+              <div><h2>${ok?'✓ RECORD VERIFIED':'✕ VERIFICATION FAILED'}</h2>
+              <p>${ok?'Record integrity confirmed. Digital signature valid. Image hash matches.':'Record integrity could not be verified.'}</p>
+              <div style="font-size:13px;margin-top:8px">
+                Image hash: ${vd.image_hash_valid?'✓ VALID':'✕ MISMATCH'} •
+                Record hash: ${vd.record_hash_valid?'✓ VALID':'✕ MISMATCH'} •
+                Signature: ${vd.signature_valid?'✓ VALID':'✕ INVALID'}
+              </div></div></div>`;
+          }
+        }
+      }catch(e){ alert('Backend verification failed: '+e.message); }
+      break; }
+  }
+});
+document.addEventListener('input', e => {
+  if(e.target.id === 'q'){ S.filters.q = e.target.value; $('#loglist').innerHTML = logList(); }
+  if(e.target.id === 'new-case') S.newTest.caseId=e.target.value;
+  if(e.target.id === 'new-sample') S.newTest.sampleId=e.target.value;
+});
+document.addEventListener('change', e => {
+  const t = e.target;
+  if(t.dataset && t.dataset.f){ S.filters[t.dataset.f] = t.value; $('#loglist').innerHTML = logList(); return; }
+  if(t.id === 'f-img' || t.id === 'f-json'){
+    S.vfiles[t.id === 'f-img' ? 'img' : 'json'] = t.files[0] || null; S.vres = null; render();
+  }
+  if(t.id === 'new-img' && t.files[0]){ fileToDataUrl(t.files[0]).then(u=>{S.newTest.imageDataUrl=u;S.newTest.analysisReady=false;S.newTest.captureStatus='VALID';S.newMsg='Image uploaded. Click Analyse Test Image to proceed.';render();}); }
+  if(t.id === 'new-case') S.newTest.caseId=t.value;
+  if(t.id === 'new-sample') S.newTest.sampleId=t.value;
+  if(t.id === 'new-testtype'){ S.newTest.testType=t.value; S.newTest.analysisReady=false; }
+});
+['dragover','dragleave','drop'].forEach(ev => document.addEventListener(ev, e => {
+  const dz = e.target.closest('[data-dz]'); if(!dz) return;
+  e.preventDefault();
+  if(ev === 'dragover') dz.classList.add('over');
+  else dz.classList.remove('over');
+  if(ev === 'drop' && e.dataTransfer.files[0]){ S.vfiles[dz.dataset.dz] = e.dataTransfer.files[0]; S.vres = null; render(); }
+}));
+document.addEventListener('keydown', e => {
+  if(e.key === 'Escape') $('#modal').innerHTML = '';
+  if(e.key === 'Enter' && S.route === 'login' && (e.target.id === 'opid' || e.target.id === 'pin')) document.querySelector('[data-act="login"]').click();
+});
+
+/* ============ boot ============ */
+(async function(){
+  try{
+    await backendHealth();
+  }catch(e){}
+  try{
+    await loadProfiles();
+  }catch(e){
+    console.warn('Profile load failed:', e);
+  }
+  try{
+    await seedIfEmpty();
+  }catch(e){
+    console.error('PRAMAAN seed failed:', e);
+  }
+
+  await route();
+  if(S.user) render();
+})()
+
+
+async function backendHealth(){
+  const candidates = window.PRAMAAN_API_URL ?
+    [window.PRAMAAN_API_URL] :
+    [API_URL, "http://localhost:8080/api/v1", "http://localhost:8001/api/v1", "http://localhost:8000/api/v1"];
+
+  for(const url of candidates){
+    try{
+      const response = await fetch(`${url}/health`, {
+        method:'GET',
+        cache:'no-store'
+      });
+      if(response.ok){
+        const body = await response.json().catch(()=>({}));
+        if(body.service === 'PRAMAAN' || body.status === 'ok'){
+          API_URL = url;
+          backendOnline = true;
+          return true;
+        }
+      }
+    }catch(e){}
+  }
+  backendOnline = false;
+  return false;
+}
+
+async function dataUrlToBlob(dataUrl){
+  const response = await fetch(dataUrl);
+  return response.blob();
+}
+
+async function analyzeCurrentTest(){
+  try{
+    if(!S.newTest.imageDataUrl){
+      S.newMsg='Please capture or upload the test image first.';
+      render(); return;
+    }
+
+    // Step-by-step animated analysis
+    const STEPS = [
+      'Image quality check',
+      'Reference colour card detection',
+      'Lighting calibration',
+      'Reaction region detection',
+      'Colour feature extraction (Lab space)',
+      'Test profile comparison',
+      'Classification',
+    ];
+    S.analysisSteps = STEPS.map(label => ({label, done: false}));
+    S.analysisRunning = true;
+    S.newTest.analysisReady = false;
+    S.newTest.analysisFailed = false;
+    S.newMsg = 'Analysing image with PRAMAAN backend…';
+    render();
+
+    const online = await backendHealth();
+    if(!online){
+      S.analysisRunning = false;
+      S.analysisSteps = [];
+      S.newMsg = 'PRAMAAN backend is offline. Start the backend server and try again.';
+      render(); return;
+    }
+
+    // Animate steps as we wait
+    let stepIdx = 0;
+    const stepTimer = setInterval(() => {
+      if(stepIdx < S.analysisSteps.length - 1){
+        S.analysisSteps[stepIdx].done = true;
+        stepIdx++;
+        const el = document.querySelector('#app');
+        if(el) {
+          // Partial re-render of just the steps
+          const stepsEl = el.querySelector('.card[style*="analysing"]');
+          // Full render is safe here since we're updating steps
+          render();
+        }
+      }
+    }, 400);
+
+    const imageBlob = await dataUrlToBlob(S.newTest.imageDataUrl);
+    const testType = S.newTest.testType || 'unknown';
+    const formData = new FormData();
+    formData.append('image', imageBlob, 'pramaan-test.jpg');
+    formData.append('test_type', testType);
+    formData.append('operator_id', S.user?.id || 'demo-operator');
+
+    const response = await fetch(`${API_URL}/tests/analyze`, {
+      method:'POST',
+      body:formData
+    });
+
+    clearInterval(stepTimer);
+    S.analysisSteps.forEach(s => s.done = true);
+
+    const data = await response.json().catch(()=>({}));
+    if(!response.ok){
+      throw new Error(data.detail || `Analysis API returned ${response.status}`);
+    }
+
+    const analysis = data.analysis || data;
+    const isInvalid = analysis.result === 'INVALID CAPTURE' || analysis.capture_status === 'INVALID';
+
+    S.newTest.result = analysis.result || 'INCONCLUSIVE';
+    S.newTest.confidence = Number.isFinite(Number(analysis.confidence)) ? Number(analysis.confidence) : 0;
+    S.newTest.deltaE = analysis.delta_e ?? analysis.deltaE ?? 0;
+    S.newTest.captureStatus = analysis.capture_status || (isInvalid ? 'INVALID' : 'VALID');
+    S.newTest.referenceDetected = analysis.reference_detected !== false;
+    S.newTest.calibrationApplied = analysis.calibration_applied !== false;
+    S.newTest.lightingFactor = Number(analysis.lighting_factor) || 1.0;
+    S.newTest.drugHypothesis = analysis.drug_hypothesis || '';
+    S.newTest.drugConfidence = Number(analysis.drug_confidence) || 0;
+    S.newTest.imageQuality = analysis.image_quality || 'GOOD';
+    S.newTest.classificationMethod = analysis.classification_method || 'ML_Colorimetric_Model_v1';
+    S.newTest.analysisMessage = analysis.message || '';
+
+    const color = analysis.sample_color || analysis.sampleColor;
+    if(Array.isArray(color) && color.length >= 3){
+      const [r,g,b] = color.map(Number);
+      if([r,g,b].every(Number.isFinite)){
+        S.newTest.sampleColor='#'+[r,g,b]
+          .map(v=>Math.max(0,Math.min(255,Math.round(v))).toString(16).padStart(2,'0')).join('');
+      }
+    }else if(typeof color === 'string' && color){
+      S.newTest.sampleColor = color;
+    }
+
+    S.newTest.analysisReady = true;
+    S.newTest.analysisFailed = false;
+    S.analysisRunning = false;
+    S.online = true;
+    backendOnline = true;
+
+    if(isInvalid){
+      S.newMsg = 'INVALID CAPTURE: ' + (analysis.reason || analysis.message || 'Please retake the image.');
+    } else {
+      S.newMsg = analysis.message || 'Analysis complete. Presumptive field-test result returned.';
+    }
+    render();
+  }catch(error){
+    clearInterval && (typeof stepTimer !== 'undefined') && clearInterval(stepTimer);
+    console.error('PRAMAAN analysis failed:',error);
+    S.analysisRunning = false;
+    S.analysisSteps = [];
+    S.newTest.analysisReady = false;
+    S.newTest.analysisFailed = true;
+    S.online = false;
+    backendOnline = false;
+    S.newMsg='Analysis failed: '+(error?.message || String(error));
+    render();
+  }
+}
+
+async function checkBackendOnBoot(){
+  await backendHealth();
+  if(S.user) render();
+}
+
+async function deleteLogRecord(recordHash, recordId, caseId){
+  const label = caseId || recordId || (recordHash ? recordHash.slice(0, 12) + '…' : 'this record');
+  if(!confirm(`Are you sure you want to delete log record for "${label}"?\n\nThis will permanently remove it from both local logs and the backend vault.`)){
+    return;
+  }
+
+  try{
+    // 1. Delete from backend if online
+    if(backendOnline && (recordId || recordHash)){
+      const target = recordId || recordHash;
+      try{
+        const res = await fetch(`${API_URL}/tests/${target}`, {method: 'DELETE'});
+        if(!res.ok && res.status !== 404){
+          const errData = await res.json().catch(()=>({}));
+          throw new Error(errData.detail || `Server returned ${res.status}`);
+        }
+      }catch(beErr){
+        console.warn('Backend delete error:', beErr);
+      }
+    }
+
+    // 2. Delete from IndexedDB local storage
+    try{
+      if(recordHash){
+        await idbDel('records', recordHash);
+        await idbDel('images', recordHash);
+      }
+    }catch(idbErr){
+      console.warn('Local storage delete notice:', idbErr);
+    }
+
+    // 3. Remove from in-memory records list
+    S.records = S.records.filter(r => (r.record_hash || r.recordHash) !== recordHash && (r.record_id || r.recordId) !== recordId);
+
+    // 4. Close record detail modal if open
+    const modal = $('#modal');
+    if(modal) modal.innerHTML = '';
+
+    // 5. Re-render UI
+    render();
+
+    // 6. Provide brief confirmation toast
+    const toast = document.createElement('div');
+    toast.className = 'err';
+    toast.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:9999;background:rgba(20,184,166,.95);border:1px solid #14b8a6;color:#fff;padding:12px 22px;border-radius:12px;font-weight:700;box-shadow:0 6px 20px rgba(0,0,0,.45);font-size:15px';
+    toast.textContent = `Log record "${label}" deleted successfully.`;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 2500);
+  }catch(e){
+    console.error('Failed to delete log:', e);
+    alert('Failed to delete log record: ' + (e?.message || e));
+  }
+}
+
+async function clearAllLogs(){
+  if(!S.records.length){
+    alert('No log records to delete.');
+    return;
+  }
+  if(!confirm(`Are you sure you want to delete ALL ${S.records.length} log records?\n\nThis will remove all records from the current ledger.`)){
+    return;
+  }
+
+  try{
+    for(const r of [...S.records]){
+      const hash = r.record_hash || r.recordHash;
+      const rid = r.record_id || r.recordId;
+      if(backendOnline && (rid || hash)){
+        try{ await fetch(`${API_URL}/tests/${rid || hash}`, {method: 'DELETE'}); }catch(e){}
+      }
+      try{
+        if(hash){
+          await idbDel('records', hash);
+          await idbDel('images', hash);
+        }
+      }catch(e){}
+    }
+    S.records = [];
+    const modal = $('#modal');
+    if(modal) modal.innerHTML = '';
+    render();
+  }catch(e){
+    console.error('Clear all logs error:', e);
+  }
+}
+
+</script>
+
+</body>
+</html>

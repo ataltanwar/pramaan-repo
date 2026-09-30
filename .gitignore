@@ -1,0 +1,68 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Python Virtual Environments
+venv/
+.venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# Environment files and secrets
+.env
+.env.*
+!.env.example
+
+# Local SQLite databases and session files
+*.sqlite
+*.sqlite3
+*.db
+*.db-journal
+pramaan.db
+backend/pramaan.db
+
+# Private Cryptographic Keys (do not commit private keys)
+*.pem
+*.key
+backend/app/keys/pramaan_ecdsa_private.pem
+app/keys/pramaan_ecdsa_private.pem
+
+# Keep the public key and model files
+!backend/app/keys/pramaan_ecdsa_public.pem
+!backend/app/models/colorimetric_ml_model.joblib
+!backend/app/models/model_metrics.json
+
+# Local Uploads and Temp Directories
+uploads/
+backend/uploads/
+scratch/
+tmp/
+temp/
+*.tmp
+
+# Operating System files
+.DS_Store
+Thumbs.db
+desktop.ini
+*.swp
+*~
+
+# IDE and Editor files
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+.gemini/
+
+# Node / Frontend temporary files
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.vercel/
